@@ -583,22 +583,20 @@ export default function Home() {
             {locale === "en" ? "عربي" : "EN"}
           </button>
           <Sheet>
-            <SheetTrigger
-              render={
-                <Button
-                  variant="outline"
-                  className="nav-cart"
-                  aria-label={`Open cart, ${cartCount} items`}
-                />
-              }
-            >
-              <ShoppingCart size={17} strokeWidth={1.6} />
-              <span className="nav-cart-label">Cart</span>
-              {cartCount > 0 && (
-                <span className="nav-cart-count">
-                  {cartCount}
-                </span>
-              )}
+            <SheetTrigger asChild>
+              <Button
+                variant="outline"
+                className="nav-cart"
+                aria-label={`Open cart, ${cartCount} items`}
+              >
+                <ShoppingCart size={17} strokeWidth={1.6} />
+                <span className="nav-cart-label">Cart</span>
+                {cartCount > 0 && (
+                  <span className="nav-cart-count">
+                    {cartCount}
+                  </span>
+                )}
+              </Button>
             </SheetTrigger>
             <SheetContent className="w-full sm:max-w-md">
               <SheetHeader>
