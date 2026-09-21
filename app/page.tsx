@@ -54,350 +54,18 @@ import {
 } from "@/components/ui/dialog";
 import { toast, Toaster } from "sonner";
 import { ShaderHeroBackground } from "@/components/ui/shader-hero";
+import { seedProducts, trucks, type Product } from "@/data/products";
 
-type Product = {
-  id: string;
-  sku: string;
-  name: string;
-  brand: string;
-  partNumber: string;
-  oe: string[];
-  category: string;
-  price: number;
-  stock: number;
-  warehouse: string;
-  fitment: string[];
-  specs: Record<string, string>;
-  image: string;
-  featured?: boolean;
-};
-
-const seedProducts: Product[] = [
-  {
-    id: "p1",
-    sku: "DR-BRK-0021",
-    name: "Ventilated Brake Disc 430 mm",
-    brand: "Sampa",
-    partNumber: "031.047",
-    oe: ["9424212112", "A9424212112"],
-    category: "Braking",
-    price: 485,
-    stock: 18,
-    warehouse: "Dubai Investment Park",
-    fitment: [
-      "Mercedes-Benz Actros MP4",
-      "Mercedes-Benz Axor 1840",
-      "Mercedes-Benz Arocs",
-    ],
-    specs: {
-      Diameter: "430 mm",
-      Thickness: "45 mm",
-      Height: "130 mm",
-      Holes: "10",
-      Weight: "32.8 kg",
-    },
-    image: "/products/brake-disc.png",
-    featured: true,
-  },
-  {
-    id: "p2",
-    sku: "DR-BRK-0084",
-    name: "Premium Brake Disc 430 mm",
-    brand: "Brembo",
-    partNumber: "14.9398.10",
-    oe: ["9424212112", "9424211212"],
-    category: "Braking",
-    price: 625,
-    stock: 7,
-    warehouse: "Dubai Investment Park",
-    fitment: [
-      "Mercedes-Benz Actros MP3",
-      "Mercedes-Benz Actros MP4",
-      "Mercedes-Benz Axor",
-    ],
-    specs: {
-      Diameter: "430 mm",
-      Thickness: "45 mm",
-      Height: "130 mm",
-      Holes: "10",
-      Weight: "33.2 kg",
-    },
-    image: "/products/brake-disc.png",
-  },
-  {
-    id: "p3",
-    sku: "DR-BRK-0062",
-    name: "Brake Disc, Front Axle",
-    brand: "Febi Bilstein",
-    partNumber: "107881",
-    oe: ["9424212112"],
-    category: "Braking",
-    price: 540,
-    stock: 24,
-    warehouse: "Sharjah Industrial Area",
-    fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Axor"],
-    specs: {
-      Diameter: "430 mm",
-      Thickness: "45 mm",
-      Axle: "Front",
-      Holes: "10",
-      Weight: "32.5 kg",
-    },
-    image: "/products/brake-disc.png",
-  },
-  {
-    id: "p4",
-    sku: "DR-AIR-0104",
-    name: "Air Dryer Cartridge",
-    brand: "WABCO / ZF",
-    partNumber: "432 410 222 7",
-    oe: ["0004295695", "A0004295695"],
-    category: "Air & Brake",
-    price: 185,
-    stock: 42,
-    warehouse: "Jebel Ali Free Zone",
-    fitment: ["Mercedes-Benz Actros", "MAN TGX", "Volvo FH", "DAF XF"],
-    specs: {
-      Thread: "M39 x 1.5",
-      Type: "Coalescence filter",
-      Pressure: "13 bar",
-    },
-    image: "/products/air-dryer.png",
-    featured: true,
-  },
-  {
-    id: "p5",
-    sku: "DR-FIL-0201",
-    name: "Oil Filter Element",
-    brand: "MANN-FILTER",
-    partNumber: "HU 12 140 x",
-    oe: ["51055040105", "51.05504.0105"],
-    category: "Filters",
-    price: 72,
-    stock: 96,
-    warehouse: "Dubai Investment Park",
-    fitment: ["MAN TGX D26", "MAN TGS D26"],
-    specs: { Height: "210 mm", Diameter: "120 mm", Media: "Synthetic" },
-    image: "/products/oil-filter.png",
-    featured: true,
-  },
-  {
-    id: "p6",
-    sku: "DR-ENG-0332",
-    name: "Fuel Filter, Heavy Duty",
-    brand: "Mahle",
-    partNumber: "KX 400D",
-    oe: ["21764966", "7421764966"],
-    category: "Filters",
-    price: 118,
-    stock: 31,
-    warehouse: "Abu Dhabi Mussafah",
-    fitment: ["Volvo FH 460", "Volvo FM 420", "Renault Trucks T"],
-    specs: { Height: "202 mm", Diameter: "95 mm", Micron: "5 μm" },
-    image: "/products/fuel-filter.png",
-  },
-  {
-    id: "p7",
-    sku: "DR-SUS-0407",
-    name: "Torque Rod Repair Kit",
-    brand: "DT Spare Parts",
-    partNumber: "1.31867",
-    oe: ["81432206231", "81.43220.6231"],
-    category: "Suspension",
-    price: 265,
-    stock: 13,
-    warehouse: "Sharjah Industrial Area",
-    fitment: ["MAN TGX", "MAN TGS", "MAN TGA"],
-    specs: { Bore: "85 mm", Width: "130 mm", Material: "Steel / rubber" },
-    image: "/products/torque-rod-kit.png",
-  },
-  {
-    id: "p8",
-    sku: "DR-ELC-0520",
-    name: "Crankshaft Speed Sensor",
-    brand: "Bosch",
-    partNumber: "0 281 002 315",
-    oe: ["51271207015", "51.27120.7015"],
-    category: "Electrical",
-    price: 210,
-    stock: 9,
-    warehouse: "Dubai Investment Park",
-    fitment: ["MAN TGX", "MAN TGS", "Neoplan"],
-    specs: { Voltage: "24 V", Connector: "2 pin", Length: "1140 mm" },
-    image: "/products/speed-sensor.png",
-  },
-  {
-    id: "p9",
-    sku: "DR-BRK-0710",
-    name: "Brake Pad Set, Disc Brake",
-    brand: "Textar",
-    partNumber: "2927801",
-    oe: ["1906400", "K046771K50"],
-    category: "Braking",
-    price: 390,
-    stock: 16,
-    warehouse: "Jebel Ali Free Zone",
-    fitment: ["DAF XF 106", "DAF CF", "Iveco Stralis"],
-    specs: { Width: "249 mm", Height: "111 mm", Thickness: "30 mm" },
-    image: "/products/brake-pad.png",
-  },
-  {
-    id: "p10",
-    sku: "DR-BRK-0731",
-    name: "Air Disc Brake Caliper",
-    brand: "Knorr-Bremse",
-    partNumber: "K013173N50",
-    oe: ["20923652", "7420923652"],
-    category: "Braking",
-    price: 2850,
-    stock: 4,
-    warehouse: "Dubai Investment Park",
-    fitment: ["Volvo FH", "Volvo FM", "Renault Trucks T"],
-    specs: { Position: "Right", Type: "Remanufactured", Brake: "SN7" },
-    image: "/products/brake-caliper.png",
-  },
-  {
-    id: "p11",
-    sku: "DR-ENG-0802",
-    name: "Belt Tensioner Assembly",
-    brand: "Sampa",
-    partNumber: "040.447",
-    oe: ["1779757", "1888460"],
-    category: "Engine",
-    price: 345,
-    stock: 12,
-    warehouse: "Sharjah Industrial Area",
-    fitment: ["Scania R Series", "Scania G Series", "Scania P Series"],
-    specs: { Pulley: "74 mm", Width: "38 mm", Material: "Aluminium" },
-    image: "/products/belt-tensioner.png",
-  },
-  {
-    id: "p12",
-    sku: "DR-FIL-0909",
-    name: "Air Filter Element",
-    brand: "MANN-FILTER",
-    partNumber: "C 32 1445",
-    oe: ["ME422778", "MK667920"],
-    category: "Filters",
-    price: 198,
-    stock: 28,
-    warehouse: "Abu Dhabi Mussafah",
-    fitment: ["Fuso Super Great", "Fuso Fighter", "Hino 700", "Isuzu Giga"],
-    specs: { Length: "498 mm", Diameter: "318 mm", Type: "Primary" },
-    image: "/products/air-filter.png",
-  },
-  {
-    id: "p13", sku: "DR-ENG-1012", name: "Automatic Belt Tensioner", brand: "Dayco", partNumber: "APV2811",
-    oe: ["A5412002470", "5412002470"], category: "Engine", price: 410, stock: 21, warehouse: "Dubai Investment Park",
-    fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Axor"], specs: { Pulley: "80 mm", Width: "34 mm", Drive: "Poly-V" }, image: "/products/belt-tensioner.png",
-  },
-  {
-    id: "p14", sku: "DR-ENG-1048", name: "Auxiliary Drive Tensioner", brand: "INA", partNumber: "534 0340 10",
-    oe: ["2197391", "21422765"], category: "Engine", price: 525, stock: 8, warehouse: "Jebel Ali Free Zone",
-    fitment: ["Volvo FH", "Volvo FM", "Renault Trucks T"], specs: { Pulley: "74 mm", Material: "Aluminium", Belt: "8PK" }, image: "/products/belt-tensioner.png",
-  },
-  {
-    id: "p15", sku: "DR-ENG-1091", name: "Fan Belt Tensioner Assembly", brand: "DT Spare Parts", partNumber: "3.34065",
-    oe: ["1859654", "1795774"], category: "Engine", price: 455, stock: 14, warehouse: "Sharjah Industrial Area",
-    fitment: ["DAF XF", "DAF CF"], specs: { Pulley: "76 mm", Width: "39 mm", Weight: "2.6 kg" }, image: "/products/belt-tensioner.png",
-  },
-  {
-    id: "p16", sku: "DR-SUS-1120", name: "Rear Axle Torque Rod Kit", brand: "Lemförder", partNumber: "42587 01",
-    oe: ["A9603503606", "9603503606"], category: "Suspension", price: 690, stock: 11, warehouse: "Dubai Investment Park",
-    fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Arocs"], specs: { Length: "585 mm", Bore: "85 mm", Position: "Rear axle" }, image: "/products/torque-rod-kit.png",
-  },
-  {
-    id: "p17", sku: "DR-SUS-1164", name: "V-Stay Repair Kit", brand: "Sampa", partNumber: "030.589",
-    oe: ["81432706078", "81.43270.6078"], category: "Suspension", price: 320, stock: 26, warehouse: "Sharjah Industrial Area",
-    fitment: ["MAN TGX", "MAN TGS", "MAN TGA"], specs: { Bore: "108 mm", Material: "Steel / rubber", Pieces: "7" }, image: "/products/torque-rod-kit.png",
-  },
-  {
-    id: "p18", sku: "DR-SUS-1195", name: "Stabilizer Bar Bush Kit", brand: "Febi Bilstein", partNumber: "172344",
-    oe: ["20533294", "7420533294"], category: "Suspension", price: 175, stock: 34, warehouse: "Abu Dhabi Mussafah",
-    fitment: ["Volvo FH", "Volvo FM", "Renault Trucks C"], specs: { Diameter: "58 mm", Position: "Front axle", Pieces: "4" }, image: "/products/torque-rod-kit.png",
-  },
-  {
-    id: "p19", sku: "DR-ELC-1211", name: "ABS Wheel Speed Sensor", brand: "WABCO / ZF", partNumber: "441 032 921 2",
-    oe: ["A0015429018", "0015429018"], category: "Electrical", price: 235, stock: 19, warehouse: "Jebel Ali Free Zone",
-    fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Axor", "Mercedes-Benz Arocs"], specs: { Voltage: "24 V", Length: "2050 mm", Connector: "2 pin" }, image: "/products/speed-sensor.png",
-  },
-  {
-    id: "p20", sku: "DR-ELC-1240", name: "Camshaft Position Sensor", brand: "Bosch", partNumber: "0 281 006 028",
-    oe: ["51271207019", "51.27120.7019"], category: "Electrical", price: 285, stock: 13, warehouse: "Dubai Investment Park",
-    fitment: ["MAN TGX", "MAN TGS"], specs: { Voltage: "24 V", Connector: "3 pin", Type: "Hall effect" }, image: "/products/speed-sensor.png",
-  },
-  {
-    id: "p21", sku: "DR-ELC-1278", name: "Exhaust Temperature Sensor", brand: "Hella", partNumber: "6PT 014 494-131",
-    oe: ["2294291", "2247305"], category: "Electrical", price: 360, stock: 7, warehouse: "Sharjah Industrial Area",
-    fitment: ["Scania R Series", "Scania G Series"], specs: { Range: "-40 to 900 C", Cable: "680 mm", Connector: "2 pin" }, image: "/products/speed-sensor.png",
-  },
-  {
-    id: "p22", sku: "DR-AIR-1310", name: "Air Dryer Cartridge Plus", brand: "Knorr-Bremse", partNumber: "K096837K50",
-    oe: ["A0004295795", "0004295795"], category: "Air & Brake", price: 225, stock: 38, warehouse: "Dubai Investment Park",
-    fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Arocs"], specs: { Thread: "M39 x 1.5", Pressure: "14 bar", Type: "Oil separator" }, image: "/products/air-dryer.png",
-  },
-  {
-    id: "p23", sku: "DR-AIR-1346", name: "Four-Circuit Protection Valve", brand: "WABCO / ZF", partNumber: "934 714 152 0",
-    oe: ["81521516098", "81.52151.6098"], category: "Air & Brake", price: 780, stock: 6, warehouse: "Jebel Ali Free Zone",
-    fitment: ["MAN TGX", "MAN TGS", "MAN TGA"], specs: { Ports: "8", Pressure: "10 bar", Thread: "M22 x 1.5" }, image: "/products/air-dryer.png",
-  },
-  {
-    id: "p24", sku: "DR-AIR-1382", name: "Electronic Air Processing Unit", brand: "Knorr-Bremse", partNumber: "K020023N50",
-    oe: ["7421720144", "21720144"], category: "Air & Brake", price: 2480, stock: 3, warehouse: "Abu Dhabi Mussafah",
-    fitment: ["Volvo FH", "Volvo FM", "Renault Trucks T"], specs: { Voltage: "24 V", Pressure: "12.5 bar", Ports: "12" }, image: "/products/air-dryer.png",
-  },
-  {
-    id: "p25", sku: "DR-FIL-1414", name: "Fuel Filter Water Separator", brand: "Fleetguard", partNumber: "FS19914",
-    oe: ["20998367", "7420998367"], category: "Filters", price: 145, stock: 44, warehouse: "Dubai Investment Park",
-    fitment: ["Volvo FH", "Volvo FM", "Renault Trucks T"], specs: { Micron: "10", Thread: "M32 x 1.5", Type: "Water separator" }, image: "/products/fuel-filter.png",
-  },
-  {
-    id: "p26", sku: "DR-FIL-1449", name: "Long-Life Oil Filter", brand: "Donaldson", partNumber: "P550812",
-    oe: ["51055040109", "51.05504.0109"], category: "Filters", price: 96, stock: 72, warehouse: "Sharjah Industrial Area",
-    fitment: ["MAN TGX", "MAN TGS"], specs: { Height: "260 mm", Diameter: "118 mm", Media: "Synthetic blend" }, image: "/products/oil-filter.png",
-  },
-  {
-    id: "p27", sku: "DR-FIL-1488", name: "Cabin Air Filter Set", brand: "Mahle", partNumber: "LAK 675/S",
-    oe: ["A0008301218", "0008301218"], category: "Filters", price: 135, stock: 31, warehouse: "Abu Dhabi Mussafah",
-    fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Arocs"], specs: { Length: "365 mm", Width: "180 mm", Media: "Activated carbon" }, image: "/products/air-filter.png",
-  },
-  {
-    id: "p28", sku: "DR-BRK-1516", name: "Rear Brake Disc 430 mm", brand: "Zimmermann", partNumber: "450.5216.20",
-    oe: ["A9604230612", "9604230612"], category: "Braking", price: 510, stock: 15, warehouse: "Dubai Investment Park",
-    fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Arocs"], specs: { Diameter: "430 mm", Thickness: "45 mm", Position: "Rear axle" }, image: "/products/brake-disc.png",
-  },
-  {
-    id: "p29", sku: "DR-BRK-1553", name: "Commercial Brake Pad Kit", brand: "Brembo", partNumber: "P 50 091",
-    oe: ["A0064201520", "0064201520"], category: "Braking", price: 440, stock: 22, warehouse: "Jebel Ali Free Zone",
-    fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Axor"], specs: { Width: "248 mm", Height: "109 mm", Axle: "Front / rear" }, image: "/products/brake-pad.png",
-  },
-  {
-    id: "p30", sku: "DR-BRK-1587", name: "Left Air Disc Brake Caliper", brand: "Meritor", partNumber: "LRA9001",
-    oe: ["20424070", "7420424070"], category: "Braking", price: 2650, stock: 5, warehouse: "Sharjah Industrial Area",
-    fitment: ["Volvo FH", "Volvo FM", "Renault Trucks T"], specs: { Position: "Left", Brake: "Elsa 225", Type: "Remanufactured" }, image: "/products/brake-caliper.png",
-  },
-];
-
-const trucks = [
-  ["Mercedes-Benz", "Actros / Axor", "2012–2024"],
-  ["MAN", "TGX / TGS", "2010–2024"],
-  ["Volvo", "FH / FM", "2013–2024"],
-  ["Scania", "R / G Series", "2010–2024"],
-  ["DAF", "XF / CF", "2013–2024"],
-  ["Iveco", "Stralis / S-Way", "2012–2024"],
-  ["Renault Trucks", "T / C / K", "2013–2024"],
-  ["Hino", "500 / 700", "2010–2024"],
-  ["Isuzu", "F / C Series", "2010–2024"],
-  ["Fuso", "Fighter / Super Great", "2010–2024"],
-];
 const categories = [
-  { name: "Braking", count: 186, icon: Disc3 },
-  { name: "Engine", count: 243, icon: Cog },
-  { name: "Filters", count: 128, icon: SlidersHorizontal },
-  { name: "Suspension", count: 154, icon: Gauge },
-  { name: "Electrical", count: 112, icon: CircleGauge },
-  { name: "Air & Brake", count: 97, icon: Settings2 },
+  { name: "Braking", icon: Disc3 },
+  { name: "Engine", icon: Cog },
+  { name: "Filters", icon: SlidersHorizontal },
+  { name: "Suspension", icon: Gauge },
+  { name: "Electrical", icon: CircleGauge },
+  { name: "Air & Brake", icon: Settings2 },
 ];
+const countIn = (products: Product[], category: string) =>
+  products.filter((p) => p.category === category).length;
 const normalize = (value: string) =>
   value
     .toUpperCase()
@@ -419,6 +87,10 @@ const money = (value: number, market: Market) =>
     currency: marketConfig[market].currency,
     maximumFractionDigits: market === "USD" ? 2 : 0,
   }).format(value * marketConfig[market].factor);
+const productPrice = (product: Product, market: Market) =>
+  product.commercialData === false ? "Contact for price" : money(product.price, market);
+const productAvailability = (product: Product) =>
+  product.commercialData === false ? "Check availability" : `${product.stock} available`;
 type View = "home" | "catalog" | "results" | "product" | "admin";
 
 export default function Home() {
@@ -1014,7 +686,7 @@ function SearchAutocomplete({
                     }}
                     className="rounded-md bg-[#f1f1ee] px-3 py-1.5 text-xs font-medium hover:bg-[#e7e7e2]"
                   >
-                    {category.name} · {category.count}
+                    {category.name} · {countIn(products, category.name)}
                   </button>
                 ))}
               </div>
@@ -1076,9 +748,7 @@ function HomeView({
   const selectedModels = trucks
     .filter((truck) => truck[0] === brand)
     .flatMap((truck) => truck[1].split(" / "));
-  const featured = [products[8], products[4], products[0], products[9]].filter(
-    Boolean,
-  );
+  const featured = products.filter((p) => p.featured).slice(0, 4);
 
   return (
     <main className="premium-home">
@@ -1430,16 +1100,19 @@ function CatalogBoard({
                       </dl>
                       <div className="catalog-product-meta">
                         <span className={compatible ? "is-compatible" : ""}>
-                          {compatible ? "Matches vehicle" : `${product.stock} in stock`}
+                          {compatible ? "Matches vehicle" : productAvailability(product)}
                         </span>
-                        <strong>{money(product.price, market)} · {product.stock} stock</strong>
+                        <strong>{productPrice(product, market)}</strong>
                       </div>
-                      <button
-                        className="catalog-add"
-                        onClick={() => addToCart(product)}
-                      >
-                        <Plus size={15} /> Add
-                      </button>
+                      {product.verified && product.source ? (
+                        <a className="catalog-add" href={product.source} target="_blank" rel="noreferrer">
+                          <Check size={15} /> Verified source
+                        </a>
+                      ) : (
+                        <button className="catalog-add" onClick={() => addToCart(product)}>
+                          <Plus size={15} /> Add
+                        </button>
+                      )}
                     </article>
                   );
                 }) : (
@@ -1532,18 +1205,17 @@ function ResultsView({
                 <div className="flex min-w-40 flex-row items-center justify-between gap-5 sm:flex-col sm:items-end">
                   <div className="sm:text-right">
                     <strong className="text-xl">
-                      {money(p.price, market)}
+                      {productPrice(p, market)}
                     </strong>
                     <span className="block text-xs text-[#4d6755]">
-                      {p.stock} available
+                      {productAvailability(p)}
                     </span>
                   </div>
-                  <button
-                    onClick={() => addToCart(p)}
-                    className="h-10 rounded-md bg-[#171816] px-5 text-sm font-semibold text-white transition hover:bg-[#333431]"
-                  >
-                    Add to cart
-                  </button>
+                  {p.verified && p.source ? (
+                    <a href={p.source} target="_blank" rel="noreferrer" className="h-10 rounded-md bg-[#171816] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#333431]">Verified source</a>
+                  ) : (
+                    <button onClick={() => addToCart(p)} className="h-10 rounded-md bg-[#171816] px-5 text-sm font-semibold text-white transition hover:bg-[#333431]">Add to cart</button>
+                  )}
                 </div>
               </article>
             ))}
@@ -1616,12 +1288,12 @@ function ProductView({
                 Trade price, excl. VAT
               </span>
               <strong className="block text-4xl tracking-[-.04em]">
-                {money(product.price, market)}
+                {productPrice(product, market)}
               </strong>
             </div>
             <div className="text-right">
               <span className="font-bold text-emerald-700">
-                ● {product.stock} in stock
+                {product.verified ? "Verified manufacturer record" : `● ${product.stock} in stock`}
               </span>
               <span className="block text-sm text-slate-500">
                 {product.warehouse}
@@ -1629,12 +1301,15 @@ function ProductView({
             </div>
           </div>
           <div className="mt-6 flex gap-3">
-            <Button
-              onClick={() => addToCart(product)}
-              className="h-12 flex-1 rounded-md bg-[#171816] text-base hover:bg-[#333431]"
-            >
-              <ShoppingCart /> Add to cart
-            </Button>
+            {product.verified && product.source ? (
+              <a href={product.source} target="_blank" rel="noreferrer" className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-md bg-[#171816] text-base font-medium text-white hover:bg-[#333431]">
+                <Check /> View verified source
+              </a>
+            ) : (
+              <Button onClick={() => addToCart(product)} className="h-12 flex-1 rounded-md bg-[#171816] text-base hover:bg-[#333431]">
+                <ShoppingCart /> Add to cart
+              </Button>
+            )}
             <Button variant="outline" className="h-12 px-5">
               RFQ
             </Button>
@@ -1978,7 +1653,7 @@ function ProductCard({
             {product.brand}
           </Badge>
           <span className="text-xs font-bold text-emerald-700">
-            ● {product.stock} in stock
+            {product.verified ? "Verified" : `● ${product.stock} in stock`}
           </span>
         </div>
         <h3 className="mt-4 text-xl font-semibold leading-tight tracking-[-.025em]">
@@ -1991,7 +1666,7 @@ function ProductCard({
           <div>
             <span className="block text-xs text-slate-500">Trade price</span>
             <strong className="text-2xl tabular-nums">
-              {money(product.price, market)}
+              {productPrice(product, market)}
             </strong>
           </div>
           <span className="grid h-10 w-10 place-items-center rounded-md bg-[#171816] text-white transition group-hover:bg-[#333431]">
