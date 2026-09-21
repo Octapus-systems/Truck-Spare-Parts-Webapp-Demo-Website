@@ -1146,7 +1146,7 @@ function ResultsView({
   market: Market;
 }) {
   return (
-    <main className="mx-auto max-w-[1120px] px-4 py-10 md:px-8 md:py-16">
+    <main className="mx-auto max-w-[1320px] px-4 py-10 md:px-8 md:py-16">
       <button
         onClick={() => setView("home")}
         className="mb-10 flex items-center gap-2 text-sm font-medium text-[#777873] hover:text-[#20211f]"
@@ -1178,16 +1178,17 @@ function ResultsView({
           </div>
         </div>
       ) : (
-        <div className="divide-y divide-[#e4e4e0] border-y border-[#e4e4e0]">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {results.map((p) => (
               <article
                 key={p.id}
-                className="grid gap-5 py-6 sm:grid-cols-[132px_1fr_auto] sm:items-center"
+                className="flex min-w-0 flex-col overflow-hidden rounded-[20px] border border-[#e2e2de] bg-white p-5 shadow-[0_12px_35px_rgba(20,20,18,.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(20,20,18,.1)]"
               >
-                <button onClick={() => openProduct(p)} className="overflow-hidden rounded-md bg-[#f2f2ef]">
-                  <img src={p.image} alt={p.name} className="h-32 w-full object-cover transition duration-300 hover:scale-[1.025]" />
+                <button onClick={() => openProduct(p)} className="group relative overflow-hidden rounded-xl bg-[#f2f2ef]">
+                  <img src={p.image} alt={p.name} className="h-52 w-full object-contain p-5 mix-blend-multiply transition duration-300 group-hover:scale-[1.035]" />
+                  {p.verified && <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[.1em] shadow-sm">Verified</span>}
                 </button>
-                <button onClick={() => openProduct(p)} className="text-left">
+                <button onClick={() => openProduct(p)} className="mt-5 flex-1 text-left">
                   <p className="text-xs font-semibold uppercase tracking-[.08em] text-[#777873]">
                     {p.brand} · {p.category}
                   </p>
@@ -1197,13 +1198,13 @@ function ResultsView({
                   <p className="mt-2 font-mono text-xs text-[#777873]">
                     Part {p.partNumber} · OE {p.oe[0]}
                   </p>
-                  <p className="mt-3 text-sm text-[#5f605c]">
+                  <p className="mt-3 min-h-10 text-sm leading-5 text-[#5f605c]">
                     Fits {p.fitment.slice(0, 2).join(", ")}
                     {p.fitment.length > 2 ? ` +${p.fitment.length - 2}` : ""}
                   </p>
                 </button>
-                <div className="flex min-w-40 flex-row items-center justify-between gap-5 sm:flex-col sm:items-end">
-                  <div className="sm:text-right">
+                <div className="mt-5 flex items-end justify-between gap-4 border-t border-[#ecece8] pt-5">
+                  <div>
                     <strong className="text-xl">
                       {productPrice(p, market)}
                     </strong>
@@ -1212,9 +1213,9 @@ function ResultsView({
                     </span>
                   </div>
                   {p.verified && p.source ? (
-                    <a href={p.source} target="_blank" rel="noreferrer" className="h-10 rounded-md bg-[#171816] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#333431]">Verified source</a>
+                    <a href={p.source} target="_blank" rel="noreferrer" className="rounded-md bg-[#171816] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#333431]">View source</a>
                   ) : (
-                    <button onClick={() => addToCart(p)} className="h-10 rounded-md bg-[#171816] px-5 text-sm font-semibold text-white transition hover:bg-[#333431]">Add to cart</button>
+                    <button onClick={() => addToCart(p)} className="rounded-md bg-[#171816] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#333431]">Add to cart</button>
                   )}
                 </div>
               </article>
