@@ -38,6 +38,10 @@ const IMG = {
   rod: "/products/torque-rod-kit.png",
   sensor: "/products/speed-sensor.png",
   tensioner: "/products/belt-tensioner.png",
+  caliperKit: "/products/brake-caliper-repair-kit.png",
+  protectionValve: "/products/four-circuit-protection-valve.png",
+  footBrakeValve: "/products/foot-brake-valve.png",
+  compressorKit: "/products/air-compressor-repair-kit.png",
 };
 
 export const trucks = [
@@ -200,13 +204,13 @@ export const seedProducts: Product[] = [
     id: "p46", sku: "DR-BRK-1867", name: "Brake Caliper Repair Kit", brand: "Sampa", partNumber: "095.831",
     oe: ["81508226034", "81.50822.6034"], category: "Braking", price: 265, stock: 22, warehouse: DIP,
     fitment: ["MAN TGX", "MAN TGS", "MAN TGA"],
-    specs: { Brake: "SB7 / SN7", Pieces: "14", Contents: "Guide pins, seals, boots" }, image: IMG.caliper,
+    specs: { Brake: "SB7 / SN7", Pieces: "14", Contents: "Guide pins, seals, boots" }, image: IMG.caliperKit,
   },
   {
     id: "p47", sku: "DR-BRK-1883", name: "Brake Caliper Guide Pin Kit", brand: "DT Spare Parts", partNumber: "4.91650",
     oe: ["1774606", "1774607"], category: "Braking", price: 118, stock: 46, warehouse: AUH,
     fitment: ["Scania R Series", "Scania G Series", "Scania P Series"],
-    specs: { Brake: "SB7", Pieces: "6", Contents: "Pins, bushes, boots" }, image: IMG.caliper,
+    specs: { Brake: "SB7", Pieces: "6", Contents: "Pins, bushes, boots" }, image: IMG.caliperKit,
   },
   {
     id: "p48", sku: "DR-BRK-1900", name: "Brake Disc 430 mm, Rear", brand: "Jurid", partNumber: "569126J",
@@ -726,13 +730,13 @@ export const seedProducts: Product[] = [
     id: "p23", sku: "DR-AIR-1346", name: "Four-Circuit Protection Valve", brand: "WABCO / ZF", partNumber: "934 714 152 0",
     oe: ["81521516098", "81.52151.6098"], category: "Air & Brake", price: 780, stock: 6, warehouse: JAFZ,
     fitment: ["MAN TGX", "MAN TGS", "MAN TGA"],
-    specs: { Ports: "8", Pressure: "10 bar", Thread: "M22 x 1.5" }, image: IMG.dryer,
+    specs: { Ports: "8", Pressure: "10 bar", Thread: "M22 x 1.5" }, image: IMG.protectionValve,
   },
   {
     id: "p24", sku: "DR-AIR-1382", name: "Electronic Air Processing Unit", brand: "Knorr-Bremse", partNumber: "K020023N50",
     oe: ["7421720144", "21720144"], category: "Air & Brake", price: 2480, stock: 3, warehouse: AUH,
     fitment: ["Volvo FH", "Volvo FM", "Renault Trucks T"],
-    specs: { Voltage: "24 V", Pressure: "12.5 bar", Ports: "12" }, image: IMG.dryer,
+    specs: { Voltage: "24 V", Pressure: "12.5 bar", Ports: "12" }, image: IMG.protectionValve,
   },
   {
     id: "p112", sku: "DR-AIR-1420", name: "Air Dryer Cartridge, Standard", brand: "WABCO / ZF", partNumber: "432 410 020 2",
@@ -774,37 +778,37 @@ export const seedProducts: Product[] = [
     id: "p118", sku: "DR-AIR-1519", name: "Pressure Regulator Valve", brand: "WABCO / ZF", partNumber: "975 303 473 0",
     oe: ["A0034317206", "0034317206"], category: "Air & Brake", price: 420, stock: 12, warehouse: JAFZ,
     fitment: ["Mercedes-Benz Actros", "Mercedes-Benz Axor"],
-    specs: { Pressure: "8.1 bar", Ports: "3", Thread: "M22 x 1.5" }, image: IMG.dryer,
+    specs: { Pressure: "8.1 bar", Ports: "3", Thread: "M22 x 1.5" }, image: IMG.protectionValve,
   },
   {
     id: "p119", sku: "DR-AIR-1536", name: "Four-Circuit Protection Valve", brand: "Knorr-Bremse", partNumber: "AE4613",
     oe: ["20718005", "7420718005"], category: "Air & Brake", price: 740, stock: 7, warehouse: AUH,
     fitment: ["Volvo FH", "Volvo FM"],
-    specs: { Ports: "6", Pressure: "10 bar", Thread: "M22 x 1.5" }, image: IMG.dryer,
+    specs: { Ports: "6", Pressure: "10 bar", Thread: "M22 x 1.5" }, image: IMG.protectionValve,
   },
   {
     id: "p120", sku: "DR-AIR-1552", name: "Trailer Control Valve", brand: "WABCO / ZF", partNumber: "973 009 300 0",
     oe: ["A0044296344", "0044296344"], category: "Air & Brake", price: 1150, stock: 5, warehouse: DIP,
     fitment: ["Mercedes-Benz Actros MP4", "Mercedes-Benz Arocs"],
-    specs: { Pressure: "10 bar", Ports: "5", Type: "Pneumatic" }, image: IMG.dryer,
+    specs: { Pressure: "10 bar", Ports: "5", Type: "Pneumatic" }, image: IMG.protectionValve,
   },
   {
     id: "p121", sku: "DR-AIR-1569", name: "Foot Brake Valve", brand: "Knorr-Bremse", partNumber: "DX65B",
     oe: ["1450391", "1519212"], category: "Air & Brake", price: 880, stock: 6, warehouse: SHJ,
     fitment: ["Scania R Series", "Scania G Series", "Scania P Series"],
-    specs: { Pressure: "10 bar", Circuits: "2", Thread: "M16 x 1.5" }, image: IMG.dryer,
+    specs: { Pressure: "10 bar", Circuits: "2", Thread: "M16 x 1.5" }, image: IMG.footBrakeValve,
   },
   {
     id: "p122", sku: "DR-AIR-1585", name: "Relay Valve", brand: "WABCO / ZF", partNumber: "973 011 000 0",
     oe: ["81521166113", "81.52116.6113"], category: "Air & Brake", price: 310, stock: 19, warehouse: JAFZ,
     fitment: ["MAN TGX", "MAN TGS", "MAN TGA"],
-    specs: { Pressure: "10 bar", Ports: "4", Thread: "M22 x 1.5" }, image: IMG.dryer,
+    specs: { Pressure: "10 bar", Ports: "4", Thread: "M22 x 1.5" }, image: IMG.protectionValve,
   },
   {
     id: "p123", sku: "DR-AIR-1602", name: "Air Compressor Repair Kit", brand: "Sampa", partNumber: "093.312",
     oe: ["A5411300215", "5411300215"], category: "Air & Brake", price: 265, stock: 21, warehouse: AUH,
     fitment: ["Mercedes-Benz Actros MP3", "Mercedes-Benz Axor"],
-    specs: { Bore: "92 mm", Contents: "Piston rings, gaskets, valve plate", Pieces: "11" }, image: IMG.dryer,
+    specs: { Bore: "92 mm", Contents: "Piston rings, gaskets, valve plate", Pieces: "11" }, image: IMG.compressorKit,
   },
   {
     id: "p124", sku: "DR-AIR-1618", name: "Compressed Air Dryer, Complete", brand: "Knorr-Bremse", partNumber: "LA8135",
