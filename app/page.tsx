@@ -55,6 +55,7 @@ import {
 import { toast, Toaster } from "sonner";
 import { ShaderHeroBackground } from "@/components/ui/shader-hero";
 import { seedProducts, trucks, type Product } from "@/data/products";
+import { CountryFlag } from "@/components/country-flag";
 import { CompatibleVehicles } from "@/components/tecdoc/compatible-vehicles";
 import type { CatalogActions } from "@/components/tecdoc/part-card";
 import { TecdocSearchResults } from "@/components/tecdoc/search-results";
@@ -252,17 +253,20 @@ export default function Home() {
               Admin
             </button>
           </nav>
-          <select
-            aria-label="Display currency"
-            value={market}
-            onChange={(e) => setMarket(e.target.value as Market)}
-            className="nav-currency"
-          >
-            <option value="UAE">AED</option>
-            <option value="Qatar">QAR</option>
-            <option value="Saudi">SAR</option>
-            <option value="USD">USD</option>
-          </select>
+          <div className="nav-market">
+            <CountryFlag market={market} className="nav-flag" />
+            <select
+              aria-label="Display currency"
+              value={market}
+              onChange={(e) => setMarket(e.target.value as Market)}
+              className="nav-currency"
+            >
+              <option value="UAE">AED</option>
+              <option value="Qatar">QAR</option>
+              <option value="Saudi">SAR</option>
+              <option value="USD">USD</option>
+            </select>
+          </div>
           <button
             onClick={() => setLocale((value) => (value === "en" ? "ar" : "en"))}
             className="nav-language"
