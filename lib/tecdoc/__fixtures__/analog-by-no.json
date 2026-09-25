@@ -1,0 +1,215 @@
+{
+ "countArticles": 91,
+ "articles": [
+  {
+   "articleId": 2995208,
+   "articleNo": "37553HY",
+   "supplierName": "4U Autoparts",
+   "articleProductName": "Brake Pad Set, disc brake",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 27937356,
+   "articleNo": "AZMT-42-060-1786",
+   "supplierName": "A.Z. Meisterteile",
+   "articleProductName": "Suspension Strut Support Mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 29156704,
+   "articleNo": "AZMT-42-060-1787",
+   "supplierName": "A.Z. Meisterteile",
+   "articleProductName": "Suspension Strut Support Mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 31558720,
+   "articleNo": "AZMT-42-060-1784",
+   "supplierName": "A.Z. Meisterteile",
+   "articleProductName": "Suspension Strut Support Mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 82168387,
+   "articleNo": "43804",
+   "supplierName": "AHE",
+   "articleProductName": "Condenser, air conditioning",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 1956957,
+   "articleNo": "212102N",
+   "supplierName": "AKS DASIS",
+   "articleProductName": "Condenser, air conditioning",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 19212478,
+   "articleNo": "ALP-003588",
+   "supplierName": "alp",
+   "articleProductName": "Hose, heat exchanger (heating)",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 5772507,
+   "articleNo": "AS-203589",
+   "supplierName": "Aslyx",
+   "articleProductName": "Hose, heat exchanger (heating)",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 944726,
+   "articleNo": "107881",
+   "supplierName": "AUTOGAMMA",
+   "articleProductName": "Condenser, air conditioning",
+   "foundVia": "ArticleNumber"
+  },
+  {
+   "articleId": 9047604,
+   "articleNo": "SIS615",
+   "supplierName": "AUTOTEAM",
+   "articleProductName": "Starter",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 119643,
+   "articleNo": "001-10-27287",
+   "supplierName": "BBR Automotive",
+   "articleProductName": "Repair Kit, suspension strut support mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 6065817,
+   "articleNo": "BPD1354",
+   "supplierName": "BENDIX Braking",
+   "articleProductName": "Brake Pad Set, disc brake",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 9134569,
+   "articleNo": "SM9573",
+   "supplierName": "BGA",
+   "articleProductName": "Strut Mount Kit",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 94090759,
+   "articleNo": "B10049",
+   "supplierName": "Borsehung",
+   "articleProductName": "Suspension Strut Support Mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 8392528,
+   "articleNo": "P30036N",
+   "supplierName": "BREMBO",
+   "articleProductName": "Brake Pad Set, disc brake",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 8359656,
+   "articleNo": "P 30 036",
+   "supplierName": "BREMBO",
+   "articleProductName": "Brake Pad Set, disc brake",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 6433827,
+   "articleNo": "CST21615GS",
+   "supplierName": "CASCO",
+   "articleProductName": "Starter",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 8239550,
+   "articleNo": "N-1243",
+   "supplierName": "COBREQ",
+   "articleProductName": "Brake Pad Set, disc brake",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 3502549,
+   "articleNo": "49483055",
+   "supplierName": "CORTECO",
+   "articleProductName": "Suspension Strut Support Mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 8486829,
+   "articleNo": "PCP1099",
+   "supplierName": "DON",
+   "articleProductName": "Brake Pad Set, disc brake",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 2517867,
+   "articleNo": "3.10156",
+   "supplierName": "DT Spare Parts",
+   "articleProductName": "Cylinder Liner",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 4479347,
+   "articleNo": "73-26940",
+   "supplierName": "DYS",
+   "articleProductName": "Suspension Strut Support Mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 55037934,
+   "articleNo": "GOM716992",
+   "supplierName": "EQUAL QUALITY",
+   "articleProductName": "Repair Kit, suspension strut support mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 944723,
+   "articleNo": "107881",
+   "supplierName": "FARCOM",
+   "articleProductName": "Starter",
+   "foundVia": "ArticleNumber"
+  },
+  {
+   "articleId": 944724,
+   "articleNo": "107881",
+   "supplierName": "FEBI BILSTEIN",
+   "articleProductName": "Repair Kit, suspension strut support mount",
+   "foundVia": "ArticleNumber"
+  },
+  {
+   "articleId": 5759322,
+   "articleNo": "ARF620612LK",
+   "supplierName": "FLAMAR",
+   "articleProductName": "Starter",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 31521365,
+   "articleNo": "GH-363301",
+   "supplierName": "GH",
+   "articleProductName": "Repair Kit, suspension strut support mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 27218549,
+   "articleNo": "GH-363312",
+   "supplierName": "GH",
+   "articleProductName": "Repair Kit, suspension strut support mount",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 13305846,
+   "articleNo": "GH-353302C01",
+   "supplierName": "GH",
+   "articleProductName": "Suspension Strut",
+   "foundVia": "IAMNumber"
+  },
+  {
+   "articleId": 59151682,
+   "articleNo": "SM-0341",
+   "supplierName": "GOOM",
+   "articleProductName": "Mounting Kit, shock absorber",
+   "foundVia": "IAMNumber"
+  }
+ ]
+}

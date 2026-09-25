@@ -77,3 +77,17 @@ normalised JSON only.
   repeat queries free.
 - Licensing: actor is a third-party TecDoc wrapper; confirm terms before
   commercial launch.
+
+## Implementation notes (2026-09-25)
+
+- Provider switched from the Apify actor (rental required) to RapidAPI
+  `auto-parts-catalog.p.rapidapi.com` with `RAPIDAPI_KEY`. Same TecDoc data,
+  direct HTTP, no actor start-up delay.
+- IDs confirmed live: `TYPE_ID=2` (commercial vehicles), `COUNTRY_ID=259` (UAE).
+- One route handler `app/api/tecdoc/[action]` instead of one route per action.
+- Caching uses `unstable_cache` (Cache Components not enabled).
+- VIN decoders return make/model/year only, not a TecDoc vehicleId: VIN
+  pre-selects the make, filters models by year, and ranks matching variants.
+- Product fitment uses "vehicles by OEM number" (the article-compatibility
+  endpoint is not available on RapidAPI); capped at 30 variants per model.
+- Free plan quota is 100 requests/month; upgrade before real traffic.

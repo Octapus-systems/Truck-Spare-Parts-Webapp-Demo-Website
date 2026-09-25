@@ -1,0 +1,227 @@
+{
+ "vehicleId": "13438",
+ "categoryId": "200338",
+ "countArticles": 55,
+ "articles": [
+  {
+   "articleId": 10927676,
+   "articleNo": "AZMT-44-024-2403",
+   "supplierName": "A.Z. Meisterteile",
+   "supplierId": 5275,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPG",
+   "articleMediaFileName": "1d510d1ded8970ec9a2e52abe1ce74fce5cc79cf.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/5275/1d510d1ded8970ec9a2e52abe1ce74fce5cc79cf.webp"
+  },
+  {
+   "articleId": 14101855,
+   "articleNo": "18533352",
+   "supplierName": "ADR",
+   "supplierId": 5549,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "2d5b275e58e748f8d91d57207899b5ee7f47526c.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/5549/2d5b275e58e748f8d91d57207899b5ee7f47526c.webp"
+  },
+  {
+   "articleId": 21056166,
+   "articleNo": "18534308",
+   "supplierName": "ADR",
+   "supplierId": 5549,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "9b8c830df36a3daeac5bb5c1ce1be820515c648f.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/5549/9b8c830df36a3daeac5bb5c1ce1be820515c648f.webp"
+  },
+  {
+   "articleId": 12508586,
+   "articleNo": "18534305",
+   "supplierName": "ADR",
+   "supplierId": 5549,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "439ce65ea28ebf93a8ee651207b762494745a707.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/5549/439ce65ea28ebf93a8ee651207b762494745a707.webp"
+  },
+  {
+   "articleId": 3346372,
+   "articleNo": "44130",
+   "supplierName": "AP",
+   "supplierId": 283,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "3973dcb91a9df71f99e52ebe8357690154525830.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/283/3973dcb91a9df71f99e52ebe8357690154525830.webp"
+  },
+  {
+   "articleId": 3346106,
+   "articleNo": "44122",
+   "supplierName": "AP",
+   "supplierId": 283,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "b944a8439a149ffbc9cc75983a9d83b79a66ebf3.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/283/b944a8439a149ffbc9cc75983a9d83b79a66ebf3.webp"
+  },
+  {
+   "articleId": 5970615,
+   "articleNo": "BCR372A",
+   "supplierName": "BERAL",
+   "supplierId": 264,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "c945bb0d03f37c39405894d4ad6ed5ac46b1583c.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/264/c945bb0d03f37c39405894d4ad6ed5ac46b1583c.webp"
+  },
+  {
+   "articleId": 5970453,
+   "articleNo": "BCR145A",
+   "supplierName": "BERAL",
+   "supplierId": 264,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "2491f7bebd6386995cf3414209f55bbc9fe8f136.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/264/2491f7bebd6386995cf3414209f55bbc9fe8f136.webp"
+  },
+  {
+   "articleId": 5926274,
+   "articleNo": "BBD32618",
+   "supplierName": "BORG & BECK",
+   "supplierId": 475,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "292ad4930e6cc054452885f8b2aa636ea7427d2b.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/475/292ad4930e6cc054452885f8b2aa636ea7427d2b.webp"
+  },
+  {
+   "articleId": 5926262,
+   "articleNo": "BBD32606",
+   "supplierName": "BORG & BECK",
+   "supplierId": 475,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "1a801daf0d4a62f4a77665fcfa7261b3694a87c2.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/475/1a801daf0d4a62f4a77665fcfa7261b3694a87c2.webp"
+  },
+  {
+   "articleId": 5926373,
+   "articleNo": "BBD32993",
+   "supplierName": "BORG & BECK",
+   "supplierId": 475,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "e4c4e0f2a5ee8d6464b2fbdac0c66a2549c8df13.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/475/e4c4e0f2a5ee8d6464b2fbdac0c66a2549c8df13.webp"
+  },
+  {
+   "articleId": 5926334,
+   "articleNo": "BBD32786",
+   "supplierName": "BORG & BECK",
+   "supplierId": 475,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "d017f4d5b35c02be43125860b8f64e3b9b1a108d.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/475/d017f4d5b35c02be43125860b8f64e3b9b1a108d.webp"
+  },
+  {
+   "articleId": 659432,
+   "articleNo": "09.B325.30",
+   "supplierName": "BREMBO",
+   "supplierId": 65,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "b944a8439a149ffbc9cc75983a9d83b79a66ebf3.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/65/b944a8439a149ffbc9cc75983a9d83b79a66ebf3.webp"
+  },
+  {
+   "articleId": 659929,
+   "articleNo": "09.C311.10",
+   "supplierName": "BREMBO",
+   "supplierId": 65,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "3973dcb91a9df71f99e52ebe8357690154525830.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/65/3973dcb91a9df71f99e52ebe8357690154525830.webp"
+  },
+  {
+   "articleId": 3843610,
+   "articleNo": "55587",
+   "supplierName": "CASALS",
+   "supplierId": 4604,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "5d031f4bc6b6e11baf7f7d6d871054fb773b5f75.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/4604/5d031f4bc6b6e11baf7f7d6d871054fb773b5f75.webp"
+  },
+  {
+   "articleId": 4004841,
+   "articleNo": "6008312",
+   "supplierName": "CUYMAR",
+   "supplierId": 6106,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "8ee458297792a25bd275f3e6d6b63057e5720438.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/6106/8ee458297792a25bd275f3e6d6b63057e5720438.webp"
+  },
+  {
+   "articleId": 4220059,
+   "articleNo": "655065",
+   "supplierName": "DACO Germany",
+   "supplierId": 6479,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPG",
+   "articleMediaFileName": "fd1853689686f892d60354f9a27f77f1d2085ddf.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/6479/fd1853689686f892d60354f9a27f77f1d2085ddf.webp"
+  },
+  {
+   "articleId": 4220055,
+   "articleNo": "655060",
+   "supplierName": "DACO Germany",
+   "supplierId": 6479,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPG",
+   "articleMediaFileName": "e3b3fed81bddda04f37e9fa58e80196667f6f003.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/6479/e3b3fed81bddda04f37e9fa58e80196667f6f003.webp"
+  },
+  {
+   "articleId": 6461032,
+   "articleNo": "CVD552",
+   "supplierName": "DON",
+   "supplierId": 278,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "2e48bfdddb026381787ec256ce0ee6efc6020cbf.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/278/2e48bfdddb026381787ec256ce0ee6efc6020cbf.webp"
+  },
+  {
+   "articleId": 3071600,
+   "articleNo": "4.63996",
+   "supplierName": "DT Spare Parts",
+   "supplierId": 355,
+   "articleProductName": "Brake Disc",
+   "productId": 82,
+   "articleMediaType": "JPEG",
+   "articleMediaFileName": "fdaec5f317843fee424f1172b8caec11bca7eed3.webp",
+   "s3image": "https://fsn1.your-objectstorage.com/tecdoc2025/media_files/images/355/fdaec5f317843fee424f1172b8caec11bca7eed3.webp"
+  }
+ ]
+}

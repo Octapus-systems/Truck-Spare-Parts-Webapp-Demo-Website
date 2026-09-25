@@ -55,6 +55,12 @@ import {
 import { toast, Toaster } from "sonner";
 import { ShaderHeroBackground } from "@/components/ui/shader-hero";
 import { seedProducts, trucks, type Product } from "@/data/products";
+import { CompatibleVehicles } from "@/components/tecdoc/compatible-vehicles";
+import type { CatalogActions } from "@/components/tecdoc/part-card";
+import { TecdocSearchResults } from "@/components/tecdoc/search-results";
+import { TecdocVehicleFinder } from "@/components/tecdoc/vehicle-finder";
+
+const truckMakes = [...new Set(trucks.map((truck) => truck[0]))];
 
 const categories = [
   { name: "Braking", icon: Disc3 },
@@ -144,6 +150,16 @@ export default function Home() {
   const addToCart = (p: Product) => {
     setCart((c) => ({ ...c, [p.id]: (c[p.id] || 0) + 1 }));
     toast.success(`${p.brand} ${p.partNumber} added to cart`);
+  };
+  const catalog: CatalogActions = {
+    products,
+    openProduct,
+    addToCart,
+    priceLabel: (p) => productPrice(p, market),
+    requestQuote: (article) =>
+      toast.success(`Quote requested: ${article.supplierName} ${article.articleNo}`, {
+        description: "Demo: the request would be routed to the UAE sales team.",
+      }),
   };
   const navigate = (next: View) => {
     setView(next);
@@ -417,6 +433,7 @@ export default function Home() {
           year={year}
           setYear={setYear}
           setVehicle={setActiveQuery}
+          catalog={catalog}
         />
       )}
       {view === "results" && (
@@ -427,6 +444,7 @@ export default function Home() {
           openProduct={openProduct}
           addToCart={addToCart}
           market={market}
+          catalog={catalog}
         />
       )}
       {view === "product" && selected && (
@@ -973,6 +991,7 @@ function CatalogBoard({
   year,
   setYear,
   setVehicle,
+  catalog,
 }: {
   vehicle: string;
   products: Product[];
@@ -987,6 +1006,7 @@ function CatalogBoard({
   year: string;
   setYear: (value: string) => void;
   setVehicle: (value: string) => void;
+  catalog: CatalogActions;
 }) {
   const [viewMode, setViewMode] = useState<"kanban" | "grid" | "list">("kanban");
   const vehicleKey = normalize(vehicle);
@@ -1045,6 +1065,7 @@ function CatalogBoard({
           </div>
           {vehicle && <p className="catalog-compatibility-result"><Check size={14} /> Showing matches for {year ? `${year} ` : ""}{vehicle}. All other catalog parts remain visible.</p>}
         </section>
+        <TecdocVehicleFinder popularMakes={truckMakes} catalog={catalog} />
       </div>
 
       <div className="catalog-view-toolbar">
@@ -1137,6 +1158,7 @@ function ResultsView({
   openProduct,
   addToCart,
   market,
+  catalog,
 }: {
   query: string;
   results: Product[];
@@ -1144,6 +1166,7 @@ function ResultsView({
   openProduct: (p: Product) => void;
   addToCart: (p: Product) => void;
   market: Market;
+  catalog: CatalogActions;
 }) {
   return (
     <main className="mx-auto max-w-[1320px] px-4 py-10 md:px-8 md:py-16">
@@ -1222,6 +1245,7 @@ function ResultsView({
             ))}
         </div>
       )}
+      <TecdocSearchResults key={query} query={query} catalog={catalog} />
     </main>
   );
 }
@@ -1348,24 +1372,31 @@ function ProductView({
           className="rounded-b-xl border border-t-0 border-slate-200 bg-white p-6"
         >
           <h2 className="text-xl font-black">Compatible truck applications</h2>
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
-            {product.fitment.map((fit) => (
-              <div
-                key={fit}
-                className="flex items-center gap-3 rounded-lg bg-slate-50 p-4"
-              >
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-white text-[#08bde8]">
-                  <Truck size={20} />
-                </span>
-                <div>
-                  <strong>{fit}</strong>
-                  <span className="block text-sm text-slate-500">
-                    Demo fitment · verify by VIN
-                  </span>
-                </div>
+          <CompatibleVehicles
+            key={product.id}
+            make={truckMakes.find((make) => product.fitment.some((fit) => fit.startsWith(make))) ?? null}
+            oe={product.oe[0]}
+            fallback={
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {product.fitment.map((fit) => (
+                  <div
+                    key={fit}
+                    className="flex items-center gap-3 rounded-lg bg-slate-50 p-4"
+                  >
+                    <span className="grid h-10 w-10 place-items-center rounded-lg bg-white text-[#08bde8]">
+                      <Truck size={20} />
+                    </span>
+                    <div>
+                      <strong>{fit}</strong>
+                      <span className="block text-sm text-slate-500">
+                        Demo fitment · verify by VIN
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            }
+          />
         </TabsContent>
         <TabsContent
           value="cross"
