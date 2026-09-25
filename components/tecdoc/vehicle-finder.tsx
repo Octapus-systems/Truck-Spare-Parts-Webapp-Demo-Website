@@ -104,7 +104,7 @@ export function TecdocVehicleFinder({ popularMakes, catalog }: { popularMakes: s
         </span>
       </div>
 
-      <form onSubmit={decode} className="mt-4 flex gap-2">
+      <form onSubmit={decode} className="flex items-center gap-2">
         <input
           value={vinInput}
           onChange={(event) => setVinInput(event.target.value)}
@@ -123,9 +123,9 @@ export function TecdocVehicleFinder({ popularMakes, catalog }: { popularMakes: s
           {vin.bodyStyle ? ` · ${vin.bodyStyle}` : ""}. Choose the model below.
         </p>
       )}
-      {vinState.error && <p className="mt-2 text-sm text-amber-800">{vinState.error}</p>}
+      {vinState.error && <p className="col-span-full text-sm text-amber-800">{vinState.error}</p>}
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="col-span-full grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         <select aria-label="TecDoc make" className={selectClass} value={manufacturerId ?? ""} onChange={(e) => selectMake(e.target.value ? Number(e.target.value) : null)}>
           <option value="">{makes.loading ? "Loading makes…" : "Make"}</option>
           {popular.length > 0 && (
@@ -156,23 +156,23 @@ export function TecdocVehicleFinder({ popularMakes, catalog }: { popularMakes: s
       </div>
 
       {loading && !makes.loading && (
-        <p className="mt-4 flex items-center gap-2 text-sm text-[#777873]"><Spinner /> Loading from TecDoc…</p>
+        <p className="col-span-full flex items-center gap-2 text-sm text-[#777873]"><Spinner /> Loading from TecDoc…</p>
       )}
       {error && error !== "not_configured" && (
-        <p className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{tecdocErrorMessage(error)}</p>
+        <p className="col-span-full rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{tecdocErrorMessage(error)}</p>
       )}
       {articles.data && (
         articles.data.length ? (
-          <>
-            <p className="mt-5 text-sm text-[#777873]">{articles.data.length} parts fit this vehicle</p>
+          <div className="col-span-full">
+            <p className="text-sm text-[#777873]">{articles.data.length} parts fit this vehicle</p>
             <div className="mt-3 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {articles.data.map((article) => (
                 <TecdocPartCard key={article.key} article={article} catalog={catalog} />
               ))}
             </div>
-          </>
+          </div>
         ) : (
-          <p className="mt-5 text-sm text-[#777873]">TecDoc lists no parts in this group for this vehicle.</p>
+          <p className="col-span-full text-sm text-[#777873]">TecDoc lists no parts in this group for this vehicle.</p>
         )
       )}
     </section>
