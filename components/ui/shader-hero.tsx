@@ -8,9 +8,9 @@ export function ShaderHeroBackground() {
         muted
         playsInline
         preload="auto"
-        poster="/hero-truck-loop-poster.jpg"
+        poster="/hero-truck-seamless-poster.jpg"
       >
-        <source src="/hero-truck-loop.mp4" type="video/mp4" />
+        <source src="/hero-truck-seamless.mp4" type="video/mp4" />
       </video>
       <div className="shader-hero-vignette" />
       <div className="shader-hero-grain" />
