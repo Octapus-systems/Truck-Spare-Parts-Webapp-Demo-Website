@@ -1196,13 +1196,12 @@ function ResultsView({
         </Button>
       </div>
       {results.length === 0 ? (
-        <div className="grid min-h-[360px] place-items-center border-y border-[#e4e4e0] text-center">
-          <div>
-            <h2 className="text-xl font-semibold">No match found</h2>
-            <p className="mt-2 text-[#777873]">
-              Try a shorter OE number, brand, category or truck model.
-            </p>
-          </div>
+        // Compact so TecDoc cross-references below stay in view.
+        <div className="rounded-xl border border-[#e4e4e0] bg-white px-5 py-4">
+          <h2 className="font-semibold">Not in our stock list</h2>
+          <p className="mt-1 text-sm text-[#777873]">
+            Check the TecDoc cross-references below, or try a shorter OE number, brand, category or truck model.
+          </p>
         </div>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">

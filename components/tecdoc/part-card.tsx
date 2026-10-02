@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Package, Plus } from "lucide-react";
+import { useState } from "react";
 import type { Product } from "@/data/products";
 import { matchProduct } from "@/lib/tecdoc/match";
 import type { TecdocArticle } from "@/lib/tecdoc/types";
@@ -15,12 +16,21 @@ export type CatalogActions = {
 
 export function TecdocPartCard({ article, catalog }: { article: TecdocArticle; catalog: CatalogActions }) {
   const match = matchProduct(article, catalog.products);
+  // Some TecDoc media files are missing upstream (the bucket answers 403); fall back to the icon.
+  const [imageFailed, setImageFailed] = useState(false);
   return (
     <article className="flex min-w-0 flex-col rounded-[16px] border border-[#e2e2de] bg-white p-4">
       <div className="flex gap-4">
-        <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-lg bg-[#f2f2ef]">
-          {article.image ? (
-            <img src={article.image} alt="" loading="lazy" className="h-full w-full object-contain p-1.5 mix-blend-multiply" />
+        <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-lg bg-[#f2f2ef]">
+          {article.image && !imageFailed ? (
+            <img
+              src={article.image}
+              alt={`${article.supplierName} ${article.articleNo}`}
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              onError={() => setImageFailed(true)}
+              className="h-full w-full object-contain p-1.5 mix-blend-multiply"
+            />
           ) : (
             <Package size={26} strokeWidth={1.4} className="text-[#a3a49f]" aria-hidden="true" />
           )}
