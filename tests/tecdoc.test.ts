@@ -62,6 +62,20 @@ test("article list keeps images; OE search keeps the OE reference", () => {
   assert.equal(new Set(oe.map((a) => a.key)).size, oe.length);
 });
 
+test("apiprofile search payloads parse; OE search keeps the searched OE", () => {
+  const exact = parseArticles(fixture("apiprofile-article-no"));
+  assert.ok(exact.some((a) => a.supplierName === "BOSCH" && a.articleNo === "0 242 236 561"));
+  assert.match(exact[0].image ?? "", /^https:\/\//);
+  assert.ok(exact.every((a) => a.oeMatch === null));
+
+  assert.ok(parseArticles(fixture("apiprofile-iam")).length > 10);
+
+  const oe = parseArticles(fixture("apiprofile-oe"), { oeSearch: true });
+  assert.ok(oe.length > 0);
+  assert.deepEqual(oe[0].oeMatch, { brand: "", number: "A 000 420 68 20" });
+  assert.equal(new Set(oe.map((a) => a.key)).size, oe.length);
+});
+
 test("article detail exposes specs and OEM numbers", () => {
   const detail = parseArticleDetail(fixture("details"))!;
   assert.equal(detail.article.articleNo, "AZMT-44-024-2403");

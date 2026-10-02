@@ -94,11 +94,12 @@ export function parseCategories(raw: unknown): TecdocCategory[] {
   return leaves.sort((a, b) => a.group.localeCompare(b.group) || a.name.localeCompare(b.name));
 }
 
-function toArticle(a: Raw): TecdocArticle | null {
+function toArticle(a: Raw, oeSearch = false): TecdocArticle | null {
   const articleNo = str(a.articleNo);
   const supplierName = str(a.supplierName);
   if (!articleNo || !supplierName) return null;
-  const oeNumber = str(a.crossNumber);
+  // apiprofile OE search echoes the searched OE number as articleSearchNo, with no brand.
+  const oeNumber = str(a.crossNumber) ?? (oeSearch ? str(a.articleSearchNo) : null);
   return {
     key: `${normalizeNumber(supplierName)}:${normalizeNumber(articleNo)}`,
     articleId: num(a.articleId),
@@ -112,12 +113,15 @@ function toArticle(a: Raw): TecdocArticle | null {
   };
 }
 
-/** Works for article lists, article-number search and OE search payloads. */
-export function parseArticles(raw: unknown): TecdocArticle[] {
+/**
+ * Works for article lists, article-number search and OE search payloads.
+ * `oeSearch` marks an apiprofile OENumber search, whose rows lack crossNumber.
+ */
+export function parseArticles(raw: unknown, { oeSearch = false } = {}): TecdocArticle[] {
   const seen = new Set<string>();
   const out: TecdocArticle[] = [];
   for (const item of arr(obj(raw).articles)) {
-    const article = toArticle(item);
+    const article = toArticle(item, oeSearch);
     if (!article || seen.has(article.key)) continue;
     seen.add(article.key);
     out.push(article);

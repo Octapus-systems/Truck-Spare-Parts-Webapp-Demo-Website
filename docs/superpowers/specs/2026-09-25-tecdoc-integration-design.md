@@ -91,3 +91,10 @@ normalised JSON only.
 - Product fitment uses "vehicles by OEM number" (the article-compatibility
   endpoint is not available on RapidAPI); capped at 30 variants per model.
 - Free plan quota is 100 requests/month; upgrade before real traffic.
+- 2026-10-02: part/OE search moved to apiprofile.com
+  (`auto-parts-catalog.apiprofile.com/api/v2`, header `x-apiprofile-key`,
+  env `APIPROFILE_KEY`). `search-articles-by-article-no` runs three
+  `articleType`s in parallel — `ArticleNumber`, `OENumber`, `IAMNumber` —
+  merged in that order. (`Please-Select`, the docs default, always returns
+  null.) RapidAPI remains the search fallback and still serves the vehicle
+  picker, VIN and fitment.

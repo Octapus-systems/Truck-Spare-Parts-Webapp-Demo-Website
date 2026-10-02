@@ -1,5 +1,7 @@
 // TecDoc lookup IDs, confirmed against the live API on 2026-09-25.
 export const TECDOC_HOST = "auto-parts-catalog.p.rapidapi.com";
+/** Same TecDoc catalogue via apiprofile.com (v2, query-string params). Used for part/OE search. */
+export const APIPROFILE_BASE = "https://auto-parts-catalog.apiprofile.com/api/v2";
 /** English. */
 export const LANG_ID = 4;
 /** United Arab Emirates. */

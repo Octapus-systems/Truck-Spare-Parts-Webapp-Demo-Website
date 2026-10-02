@@ -1,7 +1,7 @@
 // Cached TecDoc lookups. Each function caches its normalised (small) result,
 // not the raw payload, which can be several MB.
 import { unstable_cache } from "next/cache";
-import { tecdocGet } from "./client";
+import { apiprofileGet, isApiprofileConfigured, tecdocGet } from "./client";
 import { CACHE_SECONDS, COUNTRY_ID, LANG_ID, TYPE_ID } from "./config";
 import {
   findManufacturer,
@@ -75,17 +75,43 @@ const searchByOem = cached("search-oem", async (query: string) =>
   ).slice(0, SEARCH_LIMIT),
 );
 
-/** Part number + OE number search in parallel; one failing side doesn't sink the other. */
+/** apiprofile.com article lookup. `articleType` picks how articleNo is matched. */
+type ApiprofileSearchType = "ArticleNumber" | "OENumber" | "IAMNumber";
+
+const searchApiprofile = cached("apiprofile-search", async (articleType: ApiprofileSearchType, query: string) =>
+  parseArticles(
+    await apiprofileGet("/artlookup/search-articles-by-article-no", {
+      langId: LANG_ID,
+      articleType,
+      articleNo: query,
+    }),
+    { oeSearch: articleType === "OENumber" },
+  ).slice(0, SEARCH_LIMIT),
+);
+
+/**
+ * Lookups run in parallel and merge in priority order; one failing side doesn't
+ * sink the rest. apiprofile is used when configured: exact article number, then
+ * OE number, then aftermarket (IAM) cross-references. RapidAPI otherwise.
+ */
 export async function searchByNumber(query: string): Promise<TecdocArticle[]> {
-  const [byNo, byOem] = await Promise.allSettled([searchByArticleNo(query), searchByOem(query)]);
-  if (byNo.status === "rejected" && byOem.status === "rejected") throw byNo.reason;
+  const lookups = isApiprofileConfigured()
+    ? [
+        searchApiprofile("ArticleNumber", query),
+        searchApiprofile("OENumber", query),
+        searchApiprofile("IAMNumber", query),
+      ]
+    : [searchByOem(query), searchByArticleNo(query)];
+  const results = await Promise.allSettled(lookups);
+  const failed = results.find((r) => r.status === "rejected");
+  if (failed && results.every((r) => r.status === "rejected")) throw failed.reason;
   const merged = new Map<string, TecdocArticle>();
-  for (const result of [byOem, byNo]) {
+  for (const result of results) {
     if (result.status === "fulfilled") {
       for (const article of result.value) if (!merged.has(article.key)) merged.set(article.key, article);
     }
   }
-  return [...merged.values()];
+  return [...merged.values()].slice(0, SEARCH_LIMIT);
 }
 
 export const getFitmentByOe = cached("fitment-v2", async (manufacturerId: number, oe: string) =>
