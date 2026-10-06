@@ -159,8 +159,9 @@ below 1024px the panes stack (results → detail → bill).
   `matchProduct`) are folded into the own row. Status line shows
   "TecDoc: searching… / n results / unavailable".
 - Detail: TecDoc fitment uses existing `fitment` action (make + OE) for own
-  items with OE numbers — make taken from `product.fitment[0]` the same way
-  the shop's product page does it — `detail` action for TecDoc articles with an
+  items with OE numbers — make = first entry of the shop's `truckMakes`
+  list that a `product.fitment` string starts with (same rule as the shop's
+  product page) — `detail` action for TecDoc articles with an
   `articleId`. Thumbnail only here (64 px), with the existing missing-image
   fallback.
 - Compare: overlay table, columns = parts (max 4), rows = source, brand,
