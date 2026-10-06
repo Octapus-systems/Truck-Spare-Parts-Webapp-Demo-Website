@@ -1,7 +1,7 @@
 // Cached TecDoc lookups. Each function caches its normalised (small) result,
 // not the raw payload, which can be several MB.
 import { unstable_cache } from "next/cache";
-import { apiprofileGet, isApiprofileConfigured, tecdocGet } from "./client";
+import { apiprofileGet, isApiprofileConfigured, isRapidapiConfigured, tecdocGet } from "./client";
 import { CACHE_SECONDS, COUNTRY_ID, LANG_ID, TYPE_ID } from "./config";
 import {
   findManufacturer,
@@ -92,16 +92,26 @@ const searchApiprofile = cached("apiprofile-search", async (articleType: Apiprof
 /**
  * Lookups run in parallel and merge in priority order; one failing side doesn't
  * sink the rest. apiprofile is used when configured: exact article number, then
- * OE number, then aftermarket (IAM) cross-references. RapidAPI otherwise.
+ * OE number, then aftermarket (IAM) cross-references. RapidAPI otherwise, or
+ * when every apiprofile lookup fails (e.g. monthly quota used up).
  */
 export async function searchByNumber(query: string): Promise<TecdocArticle[]> {
-  const lookups = isApiprofileConfigured()
-    ? [
+  if (isApiprofileConfigured()) {
+    try {
+      return await mergeLookups([
         searchApiprofile("ArticleNumber", query),
         searchApiprofile("OENumber", query),
         searchApiprofile("IAMNumber", query),
-      ]
-    : [searchByOem(query), searchByArticleNo(query)];
+      ]);
+    } catch (error) {
+      // e.g. monthly quota used up: fall back to RapidAPI when it is set up.
+      if (!isRapidapiConfigured()) throw error;
+    }
+  }
+  return mergeLookups([searchByOem(query), searchByArticleNo(query)]);
+}
+
+async function mergeLookups(lookups: Promise<TecdocArticle[]>[]): Promise<TecdocArticle[]> {
   const results = await Promise.allSettled(lookups);
   const failed = results.find((r) => r.status === "rejected");
   if (failed && results.every((r) => r.status === "rejected")) throw failed.reason;

@@ -154,8 +154,11 @@ below 1024px the panes stack (results → detail → bill).
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- Results: own matches appear instantly; TecDoc rows load after a 400 ms
-  debounce and query length ≥ 3. TecDoc rows that match an own product (via
+- Results: own matches appear instantly as you type; TecDoc is searched when
+  Enter is pressed in the search box (query length ≥ 3). Changed from a
+  400 ms debounce during build: the apiprofile monthly quota ran out in
+  testing, and each search costs three calls. Search falls back to RapidAPI
+  when every apiprofile lookup fails. TecDoc rows that match an own product (via
   `matchProduct`) are folded into the own row. Status line shows
   "TecDoc: searching… / n results / unavailable".
 - Detail: TecDoc fitment uses existing `fitment` action (make + OE) for own
