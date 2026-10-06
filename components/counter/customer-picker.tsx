@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type KeyboardEvent } from "react";
-import type { Customer } from "@/lib/counter/types";
+import type { Customer } from "@/lib/store/types";
 import { Overlay } from "./overlay";
 
 const TRN = /^\d{15}$/;

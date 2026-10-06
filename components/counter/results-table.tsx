@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { formatMoney } from "@/lib/counter/billing";
-import type { ResultRow } from "@/lib/counter/types";
+import { formatMoney } from "@/lib/store/billing";
+import type { ResultRow } from "@/lib/store/types";
 
 export type TecdocStatus = "idle" | "searching" | "off" | "quota" | "error" | "done";
 

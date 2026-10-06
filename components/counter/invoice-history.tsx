@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, type KeyboardEvent } from "react";
-import { CURRENCY, formatMoney } from "@/lib/counter/billing";
-import type { Invoice } from "@/lib/counter/types";
+import { CURRENCY, formatMoney } from "@/lib/store/billing";
+import type { Invoice } from "@/lib/store/types";
 import { Overlay } from "./overlay";
 
 export function InvoiceHistory({

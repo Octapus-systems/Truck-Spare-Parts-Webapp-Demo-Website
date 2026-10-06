@@ -3,8 +3,8 @@
 import { Package } from "lucide-react";
 import { useState } from "react";
 import { trucks } from "@/data/products";
-import { CURRENCY, formatMoney } from "@/lib/counter/billing";
-import type { ResultRow } from "@/lib/counter/types";
+import { CURRENCY, formatMoney } from "@/lib/store/billing";
+import type { ResultRow } from "@/lib/store/types";
 import type { FitmentGroup, TecdocArticleDetail } from "@/lib/tecdoc/types";
 import { useTecdoc, yearRange } from "@/components/tecdoc/use-tecdoc";
 

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useState, type RefObject } from "react";
-import { CURRENCY, formatMoney } from "@/lib/counter/billing";
-import type { Money } from "@/lib/counter/types";
+import { CURRENCY, formatMoney } from "@/lib/store/billing";
+import type { Money } from "@/lib/store/types";
 
 export function TopBar({
   searchRef,
@@ -12,8 +12,10 @@ export function TopBar({
   customerName,
   lineCount,
   total,
+  newOrders,
   onCustomer,
   onBill,
+  onOrders,
   onReset,
 }: {
   searchRef: RefObject<HTMLInputElement | null>;
@@ -22,8 +24,10 @@ export function TopBar({
   customerName: string;
   lineCount: number;
   total: Money;
+  newOrders: number;
   onCustomer: () => void;
   onBill: () => void;
+  onOrders: () => void;
   onReset: () => void;
 }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -52,6 +56,11 @@ export function TopBar({
           </button>
         )}
       </label>
+      <TopItem label="Orders" kbd="F6" onClick={onOrders}>
+        <span className="mono">
+          {newOrders > 0 ? <span className="bg-[var(--c-accent)] px-1.5 font-semibold">{newOrders} new</span> : "0 new"}
+        </span>
+      </TopItem>
       <TopItem label="Customer" kbd="F4" onClick={onCustomer}>
         <span className="block max-w-[160px] truncate">{customerName}</span>
       </TopItem>
@@ -61,6 +70,9 @@ export function TopBar({
       <TopItem label={`Total ${CURRENCY}`} kbd="F9" onClick={onBill}>
         <span className="mono font-semibold">{formatMoney(total)}</span>
       </TopItem>
+      <Link href="/" className="hidden items-center border-l border-white/15 px-3 text-[12px] hover:bg-white/10 md:flex">
+        Shop ↗
+      </Link>
       <div className="hidden items-center border-l border-white/15 px-3 text-[12px] md:flex">
         <span className="muted mr-1.5 text-[10px] uppercase tracking-[.08em] text-white/55">User</span> Counter 1
       </div>

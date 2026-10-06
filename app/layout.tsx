@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-AE">
+    <html lang="en-AE" data-scroll-behavior="smooth">
       <body className="antialiased">{children}</body>
     </html>
   );

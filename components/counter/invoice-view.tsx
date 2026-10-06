@@ -1,7 +1,7 @@
 "use client";
 
-import { CURRENCY, describeDiscount, formatMoney, lineAmount } from "@/lib/counter/billing";
-import type { Invoice } from "@/lib/counter/types";
+import { CURRENCY, describeDiscount, formatMoney, lineAmount } from "@/lib/store/billing";
+import type { Invoice } from "@/lib/store/types";
 import { Overlay } from "./overlay";
 
 // Demo seller details; replace with the real trading name and TRN before use.

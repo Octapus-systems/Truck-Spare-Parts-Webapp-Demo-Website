@@ -1,7 +1,7 @@
 "use client";
 
-import { CURRENCY, formatMoney } from "@/lib/counter/billing";
-import type { ResultRow } from "@/lib/counter/types";
+import { CURRENCY, formatMoney } from "@/lib/store/billing";
+import type { ResultRow } from "@/lib/store/types";
 import { Overlay } from "./overlay";
 
 /** Side-by-side comparison of up to 4 marked parts. */

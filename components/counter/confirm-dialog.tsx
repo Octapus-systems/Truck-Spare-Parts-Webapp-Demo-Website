@@ -1,7 +1,7 @@
 "use client";
 
-import { CURRENCY, formatMoney } from "@/lib/counter/billing";
-import type { Bill, BillLine, Customer, Totals } from "@/lib/counter/types";
+import { CURRENCY, formatMoney } from "@/lib/store/billing";
+import type { Bill, BillLine, Customer, Totals } from "@/lib/store/types";
 import { Overlay } from "./overlay";
 
 export function ConfirmDialog({

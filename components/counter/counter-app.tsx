@@ -1,24 +1,26 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { seedProducts, type Product } from "@/data/products";
-import { availableStock, billTotals, formatMoney, parseDiscount, parsePrice, toFils } from "@/lib/counter/billing";
-import { useCounterKeys, type CounterAction } from "@/lib/counter/keys";
+import type { Product } from "@/data/products";
+import { billTotals, formatMoney, parseDiscount, parsePrice, toFils } from "@/lib/store/billing";
+import { useCounterKeys, type CounterAction } from "@/lib/store/keys";
 import {
   addLine,
+  cancelOrder,
   changeQty,
   confirmBill,
   customerOf,
+  loadOrderIntoBill,
   newBill,
   removeLine,
   saveCustomer,
   setCustomer,
   setDiscount,
   toggleVerified,
-} from "@/lib/counter/reducer";
-import { buildRows } from "@/lib/counter/search";
-import { isStorageOk, resetDemo, update, useCounterState } from "@/lib/counter/store";
-import type { BillLine, Invoice, ResultRow } from "@/lib/counter/types";
+} from "@/lib/store/reducer";
+import { buildRows } from "@/lib/store/search";
+import { isStorageOk, resetDemo, update, useAppState, useCatalog } from "@/lib/store/store";
+import type { BillLine, Invoice, Order, ResultRow } from "@/lib/store/types";
 import type { TecdocArticle } from "@/lib/tecdoc/types";
 import { useTecdoc } from "@/components/tecdoc/use-tecdoc";
 import { BillPanel } from "./bill-panel";
@@ -28,6 +30,7 @@ import { CustomerPicker } from "./customer-picker";
 import { InvoiceHistory } from "./invoice-history";
 import { InvoiceView } from "./invoice-view";
 import { HelpOverlay, KeyBar } from "./key-bar";
+import { OrdersList } from "./orders-list";
 import { Prompt } from "./overlay";
 import { PartDetail } from "./part-detail";
 import { ResultsTable, type TecdocStatus } from "./results-table";
@@ -42,6 +45,7 @@ type Overlay =
   | { kind: "confirm" }
   | { kind: "invoice"; invoice: Invoice }
   | { kind: "history" }
+  | { kind: "orders" }
   | { kind: "help" };
 
 const MAX_COMPARE = 4;
@@ -49,7 +53,8 @@ const MAX_COMPARE = 4;
 const lineKey = (line: BillLine) => (line.source === "own" ? `own:${line.productId}` : `td:${line.tecdocKey}`);
 
 export function CounterApp() {
-  const state = useCounterState();
+  const state = useAppState();
+  const products = useCatalog();
   const { bill } = state;
 
   const [query, setQuery] = useState("");
@@ -86,10 +91,11 @@ export function CounterApp() {
               ? "done"
               : "idle";
 
-  const stockOf = (product: Product) => availableStock(product, state.movements);
+  // Live products already include sold stock and admin edits.
+  const stockOf = (product: Product) => product.stock;
   const rows = useMemo(
-    () => buildRows(query, seedProducts, tecdocArticles, (p) => availableStock(p, state.movements)),
-    [query, tecdocArticles, state.movements],
+    () => buildRows(query, products, tecdocArticles, (p) => p.stock),
+    [query, tecdocArticles, products],
   );
 
   const selectedIndex = Math.min(rowIndex, Math.max(rows.length - 1, 0));
@@ -108,7 +114,7 @@ export function CounterApp() {
 
   const shortBy = (line: BillLine) => {
     if (line.source !== "own") return 0;
-    const product = seedProducts.find((p) => p.id === line.productId);
+    const product = products.find((p) => p.id === line.productId);
     if (!product) return 0;
     const qtyInBill = bill.lines.filter((l) => l.productId === line.productId).reduce((n, l) => n + l.qty, 0);
     return Math.max(0, qtyInBill - stockOf(product));
@@ -250,6 +256,15 @@ export function CounterApp() {
     setStatus(`Invoice ${invoice.number} created · ${formatMoney(invoice.total)} AED.`);
   };
 
+  const openOrder = (order: Order) => {
+    update((s) => loadOrderIntoBill(s, order.number, products));
+    setVerifiedKeys(new Set());
+    setLineIndex(0);
+    closeOverlay();
+    focusBill();
+    setStatus(`Order ${order.number} loaded into the bill. Check fitment and stock, then F9 to invoice.`);
+  };
+
   const startNewBill = () => {
     if (bill.lines.length && !pendingNew) {
       setPendingNew(true);
@@ -334,6 +349,8 @@ export function CounterApp() {
         return setOverlay({ kind: "confirm" });
       case "history":
         return setOverlay({ kind: "history" });
+      case "orders":
+        return setOverlay({ kind: "orders" });
       case "newBill":
         return startNewBill();
       case "help":
@@ -350,6 +367,8 @@ export function CounterApp() {
         onQuery={onQuery}
         customerName={customer.name}
         lineCount={bill.lines.length}
+        newOrders={state.orders.filter((o) => o.status === "new").length}
+        onOrders={() => run("orders")}
         total={totals.total}
         onCustomer={() => run("customer")}
         onBill={() => run("bill")}
@@ -492,6 +511,19 @@ export function CounterApp() {
       {overlay.kind === "invoice" && <InvoiceView invoice={overlay.invoice} onNew={closeOverlay} onClose={closeOverlay} />}
       {overlay.kind === "history" && (
         <InvoiceHistory invoices={state.invoices} onOpen={(invoice) => setOverlay({ kind: "invoice", invoice })} onClose={closeOverlay} />
+      )}
+      {overlay.kind === "orders" && (
+        <OrdersList
+          orders={state.orders}
+          customerOf={(id) => customerOf(state, id)}
+          draftLines={bill.orderId ? 0 : bill.lines.length}
+          onOpen={openOrder}
+          onCancel={(order) => {
+            update((s) => cancelOrder(s, order.number));
+            setStatus(`Order ${order.number} cancelled.`);
+          }}
+          onClose={closeOverlay}
+        />
       )}
       {overlay.kind === "help" && <HelpOverlay onClose={closeOverlay} />}
     </div>

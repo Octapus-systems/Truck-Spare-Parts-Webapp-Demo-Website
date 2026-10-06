@@ -1,4 +1,4 @@
-// Counter (staff catalogue + billing) shapes. Money is integer fils (1 AED = 100).
+// Shared app state for the shop and the staff counter. Money is integer fils (1 AED = 100).
 import type { Product } from "../../data/products";
 import type { TecdocArticle } from "../tecdoc/types";
 
@@ -24,9 +24,15 @@ export type BillLine = {
 
 export type Discount = { kind: "amount"; value: Money } | { kind: "percent"; value: number };
 
-export type Bill = { lines: BillLine[]; customerId: string; discount: Discount | null };
+export type Bill = {
+  lines: BillLine[];
+  customerId: string;
+  discount: Discount | null;
+  /** Shop order this bill was loaded from. */
+  orderId: string | null;
+};
 
-export type Customer = { id: string; name: string; phone: string; trn: string | null };
+export type Customer = { id: string; name: string; phone: string; trn: string | null; email?: string };
 
 export type Totals = { subtotal: Money; discountTotal: Money; vat: Money; total: Money };
 
@@ -41,12 +47,39 @@ export type Invoice = Totals & {
 /** qty is negative for stock going out. */
 export type StockMovement = { productId: string; qty: number; invoice: string };
 
-export type CounterState = {
+/** Shop order: own catalogue items only, priced at checkout. */
+export type OrderLine = { productId: string; qty: number; unitPrice: Money };
+
+export type Order = {
+  number: string;
+  createdAt: string;
+  customerId: string;
+  lines: OrderLine[];
+  fulfilment: "pickup" | "delivery";
+  note: string;
+  status: "new" | "billed" | "cancelled";
+  invoice: string | null;
+};
+
+/** Admin edits. Live stock = (stockBase ?? seed stock) + movements. Price in AED. */
+export type ProductOverride = { price?: number; stockBase?: number };
+
+export type Market = "UAE" | "Qatar" | "Saudi" | "USD";
+
+export type Prefs = { market: Market; locale: "en" | "ar" };
+
+export type AppState = {
   bill: Bill;
   customers: Customer[];
   invoices: Invoice[];
   movements: StockMovement[];
   nextInvoiceSeq: number;
+  orders: Order[];
+  nextOrderSeq: number;
+  overrides: Record<string, ProductOverride>;
+  /** Shop cart: productId → qty. */
+  cart: Record<string, number>;
+  prefs: Prefs;
 };
 
 /** One row in the results table: an own catalogue item or a TecDoc article. */

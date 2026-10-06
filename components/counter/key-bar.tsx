@@ -1,6 +1,6 @@
 "use client";
 
-import { SHORTCUTS, keyLabel, type CounterAction } from "@/lib/counter/keys";
+import { SHORTCUTS, keyLabel, type CounterAction } from "@/lib/store/keys";
 import { Overlay } from "./overlay";
 
 /** Bottom bar: clickable shortcut hints, generated from the shortcut table. */

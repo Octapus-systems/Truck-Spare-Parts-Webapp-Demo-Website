@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { CURRENCY, describeDiscount, formatMoney, lineAmount } from "@/lib/counter/billing";
-import type { Bill, BillLine, Customer, Totals } from "@/lib/counter/types";
+import { CURRENCY, describeDiscount, formatMoney, lineAmount } from "@/lib/store/billing";
+import type { Bill, BillLine, Customer, Totals } from "@/lib/store/types";
 
 export function BillPanel({
   bill,
@@ -41,7 +41,7 @@ export function BillPanel({
   return (
     <section className="c-pane" data-active={active} aria-label="Bill">
       <div className="c-pane-head">
-        <span>Bill · draft</span>
+        <span>Bill · {bill.orderId ? `order ${bill.orderId}` : "draft"}</span>
         <button onClick={onCustomer} className="max-w-[60%] truncate font-normal normal-case tracking-normal">
           {customer.name}
           {customer.trn && <span className="mono muted"> · TRN {customer.trn}</span>}

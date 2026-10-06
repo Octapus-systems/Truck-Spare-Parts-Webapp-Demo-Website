@@ -10,7 +10,7 @@ import {
   invoiceNumber,
   parseDiscount,
   parsePrice,
-} from "../lib/counter/billing.ts";
+} from "../lib/store/billing.ts";
 import {
   WALK_IN,
   addLine,
@@ -23,9 +23,9 @@ import {
   saveCustomer,
   setDiscount,
   toggleVerified,
-} from "../lib/counter/reducer.ts";
-import { buildRows, searchOwn } from "../lib/counter/search.ts";
-import type { BillLine } from "../lib/counter/types.ts";
+} from "../lib/store/reducer.ts";
+import { buildRows, searchOwn } from "../lib/store/search.ts";
+import type { BillLine } from "../lib/store/types.ts";
 import type { TecdocArticle } from "../lib/tecdoc/types.ts";
 
 const ownLine = (productId: string, unitPrice: number, qty = 1): Omit<BillLine, "id"> => ({
