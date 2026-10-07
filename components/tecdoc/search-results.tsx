@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Spinner } from "@/components/ui/spinner";
 import { matchProduct } from "@/lib/tecdoc/match";
 import type { TecdocArticle } from "@/lib/tecdoc/types";
+import { SkeletonCards } from "@/components/shop/motion";
 import { TecdocPartCard, type CatalogActions } from "./part-card";
 import { tecdocErrorMessage, useTecdoc } from "./use-tecdoc";
 
@@ -26,9 +26,10 @@ export function TecdocSearchResults({ query, catalog }: { query: string; catalog
       <p className="text-xs font-semibold uppercase tracking-[.14em] text-[#8a8b87]">TecDoc catalogue</p>
       <h2 className="mt-2 text-2xl font-semibold tracking-[-.02em]">Cross-references for “{q}”</h2>
       {loading && (
-        <p className="mt-6 flex items-center gap-2 text-sm text-[#777873]">
-          <Spinner /> Searching TecDoc…
-        </p>
+        <>
+          <p className="sr-only" role="status">Searching TecDoc…</p>
+          <SkeletonCards count={6} />
+        </>
       )}
       {error && <p className="mt-6 rounded-lg bg-amber-50 p-4 text-sm text-amber-900">{tecdocErrorMessage(error)}</p>}
       {data && articles.length === 0 && (

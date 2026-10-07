@@ -69,7 +69,7 @@ test("returning customer is matched by phone digits", () => {
 
 test("counter loads an order, confirming bills it and moves stock", () => {
   const placed = placeOrder(addToCart(initialState(), "p1", 2), checkout, seedProducts, NOW);
-  let s = loadOrderIntoBill(placed.state, placed.order!.number, seedProducts);
+  const s = loadOrderIntoBill(placed.state, placed.order!.number, seedProducts);
   assert.equal(s.bill.orderId, "ORD-2026-0001");
   assert.equal(s.bill.customerId, placed.order!.customerId);
   assert.equal(s.bill.lines[0].partNumber, p1.partNumber);
@@ -97,7 +97,7 @@ test("cancelling an order clears it from the bill", () => {
 
 test("admin price and stock edits combine with sales", () => {
   let s = setProductData(initialState(), "p1", { price: 500, stock: 10 });
-  let live = liveProducts(seedProducts, s).find((p) => p.id === "p1")!;
+  const live = liveProducts(seedProducts, s).find((p) => p.id === "p1")!;
   assert.equal(live.price, 500);
   assert.equal(live.stock, 10);
 

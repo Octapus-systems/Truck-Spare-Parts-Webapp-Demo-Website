@@ -7,18 +7,16 @@ import type { Product } from "@/data/products";
 import { productPrice, stockState } from "@/lib/shop/market";
 import { addToCart } from "@/lib/store/reducer";
 import { update, useAppState } from "@/lib/store/store";
-import type { TecdocArticle } from "@/lib/tecdoc/types";
+import { FitsBadge } from "./garage";
+import { flyToCart } from "./motion";
+import { partFromProduct, useQuote } from "./quote-dialog";
 
-export const addProductToCart = (product: Product, qty = 1) => {
+/** `source` is the element to fly into the cart (usually the product image). */
+export const addProductToCart = (product: Product, qty = 1, source?: Element | null) => {
   update((s) => addToCart(s, product.id, qty));
+  flyToCart(source);
   toast.success(`${product.brand} ${product.partNumber} added to cart`, { description: product.name });
 };
-
-/** TecDoc parts we don't stock: the counter quotes them. Demo: no request is sent. */
-export const requestTecdocQuote = (article: TecdocArticle) =>
-  toast.info(`Quote requested: ${article.supplierName} ${article.articleNo}`, {
-    description: "Demo — our counter team would call you back with price and lead time.",
-  });
 
 export function ProductCard({ product, layout = "grid" }: { product: Product; layout?: "grid" | "list" }) {
   const { prefs, cart } = useAppState();
@@ -43,6 +41,7 @@ export function ProductCard({ product, layout = "grid" }: { product: Product; la
             {product.partNumber} · OE {product.oe.join(", ")}
           </p>
           <p className="mt-1 hidden truncate text-[13px] text-[var(--s-muted)] sm:block">Fits {product.fitment.join(", ")}</p>
+          <FitsBadge product={product} className="mt-1.5" />
         </div>
         <div className="flex shrink-0 flex-col items-end gap-2">
           <strong className="tnum text-[17px]">{productPrice(product, prefs.market)}</strong>
@@ -74,6 +73,7 @@ export function ProductCard({ product, layout = "grid" }: { product: Product; la
           {product.partNumber} · OE {product.oe[0]}
         </p>
         <p className="mt-1 truncate text-[13px] text-[var(--s-muted)]">Fits {product.fitment.slice(0, 2).join(", ")}</p>
+        <FitsBadge product={product} className="mt-2 self-start" />
         <div className="mt-auto flex items-end justify-between gap-3 pt-4">
           <div>
             <strong className="tnum block text-[18px] tracking-[-.01em]">{productPrice(product, prefs.market)}</strong>
@@ -89,15 +89,22 @@ export function ProductCard({ product, layout = "grid" }: { product: Product; la
 }
 
 function AddButton({ product, inCart }: { product: Product; inCart: number }) {
-  if (product.commercialData === false) {
+  const openQuote = useQuote();
+  if (product.commercialData === false || product.stock <= 0) {
     return (
-      <Link href={`/parts/${product.id}`} className="s-btn" data-variant="outline" data-size="sm">
-        Details
-      </Link>
+      <button className="s-btn" data-variant="outline" data-size="sm" onClick={() => openQuote(partFromProduct(product))}>
+        Get quote
+      </button>
     );
   }
   return (
-    <button className="s-btn" data-variant={inCart ? "outline" : "primary"} data-size="sm" onClick={() => addProductToCart(product)} aria-label={`Add ${product.name} to cart`}>
+    <button
+      className="s-btn"
+      data-variant={inCart ? "outline" : "primary"}
+      data-size="sm"
+      onClick={(e) => addProductToCart(product, 1, e.currentTarget.closest("article")?.querySelector("img"))}
+      aria-label={`Add ${product.name} to cart`}
+    >
       <Plus size={15} aria-hidden="true" />
       {inCart ? `In cart · ${inCart}` : "Add"}
     </button>

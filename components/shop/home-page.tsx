@@ -9,7 +9,12 @@ import { trucks } from "@/data/products";
 import { strings } from "@/lib/shop/i18n";
 import { productPrice } from "@/lib/shop/market";
 import { useAppState, useCatalog } from "@/lib/store/store";
-import { addProductToCart, ProductCard, requestTecdocQuote } from "./product-card";
+import { saveVehicle } from "@/lib/store/garage";
+import { update } from "@/lib/store/store";
+import { vehicleParams } from "./garage";
+import { CountUp, Reveal } from "./motion";
+import { addProductToCart, ProductCard } from "./product-card";
+import { partFromArticle, useQuote } from "./quote-dialog";
 import { SearchBox } from "./search-box";
 
 const POPULAR = ["9424212112", "2927801", "Brake disc", "Air filter", "MAN TGX"];
@@ -35,6 +40,7 @@ export function HomePage() {
   const products = useCatalog();
   const t = strings(prefs.locale);
   const router = useRouter();
+  const openQuote = useQuote();
 
   const brands = [...new Set(products.map((p) => p.brand))].sort();
   const unitsInStock = products.reduce((sum, p) => sum + Math.max(p.stock, 0), 0);
@@ -45,7 +51,7 @@ export function HomePage() {
     openProduct: (p: { id: string }) => router.push(`/parts/${p.id}`),
     addToCart: (p: (typeof products)[number]) => addProductToCart(p),
     priceLabel: (p: (typeof products)[number]) => productPrice(p, prefs.market),
-    requestQuote: requestTecdocQuote,
+    requestQuote: (a: Parameters<typeof partFromArticle>[0]) => openQuote(partFromArticle(a)),
   };
 
   return (
@@ -80,42 +86,46 @@ export function HomePage() {
       {/* Trust strip */}
       <section aria-label="Why Desert Route" className="border-b border-[var(--s-line)]">
         <div className="s-container grid grid-cols-2 divide-[var(--s-line)] md:grid-cols-4 md:divide-x">
-          <Stat icon={BadgeCheck} value={`${brands.length}+`} label="OE-quality brands" />
-          <Stat icon={PackageCheck} value={unitsInStock.toLocaleString("en-AE")} label="Units in stock now" />
-          <Stat icon={Warehouse} value={String(new Set(products.map((p) => p.warehouse)).size)} label="UAE warehouses" />
+          <Stat icon={BadgeCheck} value={<><CountUp value={brands.length} />+</>} label="OE-quality brands" />
+          <Stat icon={PackageCheck} value={<CountUp value={unitsInStock} />} label="Units in stock now" />
+          <Stat icon={Warehouse} value={<CountUp value={new Set(products.map((p) => p.warehouse)).size} />} label="UAE warehouses" />
           <Stat icon={Truck} value="Same day" label="Dispatch before 2 pm" />
         </div>
       </section>
 
       {/* Categories */}
-      <section className="s-container mt-20">
-        <SectionHead eyebrow="Browse" title="Shop by system" link={{ href: "/parts", label: "All parts" }} />
-        <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-          {CATEGORIES.map(({ name, icon: Icon, blurb }) => {
-            const count = products.filter((p) => p.category === name).length;
-            return (
-              <Link key={name} href={`/parts?category=${encodeURIComponent(name)}`} className="s-card group p-5" data-hover>
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-[var(--s-surface)] text-[var(--s-text)] transition-colors group-hover:bg-[var(--s-dark)] group-hover:text-white">
-                  <Icon size={20} strokeWidth={1.7} aria-hidden="true" />
-                </span>
-                <p className="mt-4 text-[15px] font-semibold">{name}</p>
-                <p className="mt-0.5 text-[13px] text-[var(--s-muted)]">{blurb}</p>
-                <p className="tnum mt-3 text-[12px] font-medium text-[var(--s-text-2)]">{count} parts</p>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+      <Reveal>
+        <section className="s-container mt-20">
+          <SectionHead eyebrow="Browse" title="Shop by system" link={{ href: "/parts", label: "All parts" }} />
+          <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+            {CATEGORIES.map(({ name, icon: Icon, blurb }) => {
+              const count = products.filter((p) => p.category === name).length;
+              return (
+                <Link key={name} href={`/parts?category=${encodeURIComponent(name)}`} className="s-card group p-5" data-hover>
+                  <span className="grid h-10 w-10 place-items-center rounded-lg bg-[var(--s-surface)] text-[var(--s-text)] transition-colors group-hover:bg-[var(--s-dark)] group-hover:text-white">
+                    <Icon size={20} strokeWidth={1.7} aria-hidden="true" />
+                  </span>
+                  <p className="mt-4 text-[15px] font-semibold">{name}</p>
+                  <p className="mt-0.5 text-[13px] text-[var(--s-muted)]">{blurb}</p>
+                  <p className="tnum mt-3 text-[12px] font-medium text-[var(--s-text-2)]">{count} parts</p>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      </Reveal>
 
       {/* Featured */}
-      <section className="s-container mt-20">
-        <SectionHead eyebrow="In stock" title="Frequently ordered" link={{ href: "/parts?stock=1", label: "View all in stock" }} />
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      </section>
+      <Reveal>
+        <section className="s-container mt-20">
+          <SectionHead eyebrow="In stock" title="Frequently ordered" link={{ href: "/parts?stock=1", label: "View all in stock" }} />
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {featured.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      </Reveal>
 
       {/* TecDoc vehicle finder */}
       <section id="vehicles" className="mt-20 scroll-mt-20 border-y border-[var(--s-line)] bg-[var(--s-surface)] py-16">
@@ -131,50 +141,56 @@ export function HomePage() {
       </section>
 
       {/* Brands */}
-      <section id="brands" className="s-container mt-20 scroll-mt-20">
-        <SectionHead eyebrow="Brands" title="Stocked brands" />
-        <ul className="mt-8 grid grid-cols-2 overflow-hidden rounded-xl border-s border-t border-[var(--s-line)] sm:grid-cols-3 lg:grid-cols-6">
-          {brands.map((brand) => (
-            <li key={brand} className="border-b border-e border-[var(--s-line)]">
-              <Link href={`/parts?brand=${encodeURIComponent(brand)}`} className="flex h-20 items-center justify-center bg-white px-3 text-center text-[15px] font-semibold tracking-[-.01em] text-[var(--s-text-2)] hover:text-[var(--s-text)]">
-                {brand}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <Reveal>
+        <section id="brands" className="s-container mt-20 scroll-mt-20">
+          <SectionHead eyebrow="Brands" title="Stocked brands" />
+          <ul className="mt-8 grid grid-cols-2 overflow-hidden rounded-xl border-s border-t border-[var(--s-line)] sm:grid-cols-3 lg:grid-cols-6">
+            {brands.map((brand) => (
+              <li key={brand} className="border-b border-e border-[var(--s-line)]">
+                <Link href={`/parts?brand=${encodeURIComponent(brand)}`} className="flex h-20 items-center justify-center bg-white px-3 text-center text-[15px] font-semibold tracking-[-.01em] text-[var(--s-text-2)] hover:text-[var(--s-text)]">
+                  {brand}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </Reveal>
 
       {/* How it works */}
-      <section id="how" className="s-container mt-20 scroll-mt-20">
-        <SectionHead eyebrow="How it works" title="From part number to invoice" />
-        <ol className="mt-8 grid gap-4 md:grid-cols-4">
-          {STEPS.map(({ icon: Icon, title, body }, i) => (
-            <li key={title} className="s-card p-5">
-              <div className="flex items-center justify-between">
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-[var(--s-accent-soft)] text-[var(--s-accent)]">
-                  <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
-                </span>
-                <span className="mono text-[12px] text-[var(--s-muted)]">0{i + 1}</span>
-              </div>
-              <p className="mt-4 text-[15px] font-semibold">{title}</p>
-              <p className="mt-1 text-[14px] leading-6 text-[var(--s-text-2)]">{body}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
+      <Reveal>
+        <section id="how" className="s-container mt-20 scroll-mt-20">
+          <SectionHead eyebrow="How it works" title="From part number to invoice" />
+          <ol className="mt-8 grid gap-4 md:grid-cols-4">
+            {STEPS.map(({ icon: Icon, title, body }, i) => (
+              <li key={title} className="s-card p-5">
+                <div className="flex items-center justify-between">
+                  <span className="grid h-10 w-10 place-items-center rounded-lg bg-[var(--s-accent-soft)] text-[var(--s-accent)]">
+                    <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
+                  </span>
+                  <span className="mono text-[12px] text-[var(--s-muted)]">0{i + 1}</span>
+                </div>
+                <p className="mt-4 text-[15px] font-semibold">{title}</p>
+                <p className="mt-1 text-[14px] leading-6 text-[var(--s-text-2)]">{body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </Reveal>
 
       {/* Trade CTA */}
-      <section className="s-container mt-20">
-        <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-[var(--s-dark)] px-6 py-10 text-white md:flex-row md:items-center md:px-10">
-          <div>
-            <p className="text-[22px] font-semibold tracking-[-.02em]">Running a fleet or workshop?</p>
-            <p className="mt-2 max-w-xl text-[15px] text-white/70">Add your TRN at checkout for VAT invoices. Our counter team confirms stock and fitment on every order.</p>
+      <Reveal>
+        <section className="s-container mt-20">
+          <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-[var(--s-dark)] px-6 py-10 text-white md:flex-row md:items-center md:px-10">
+            <div>
+              <p className="text-[22px] font-semibold tracking-[-.02em]">Running a fleet or workshop?</p>
+              <p className="mt-2 max-w-xl text-[15px] text-white/70">Add your TRN at checkout for VAT invoices. Our counter team confirms stock and fitment on every order.</p>
+            </div>
+            <Link href="/parts" className="s-btn shrink-0 bg-white text-[var(--s-text)] hover:bg-white/90" data-size="lg">
+              Start searching <ArrowRight size={16} className="rtl:rotate-180" />
+            </Link>
           </div>
-          <Link href="/parts" className="s-btn shrink-0 bg-white text-[var(--s-text)] hover:bg-white/90" data-size="lg">
-            Start searching <ArrowRight size={16} className="rtl:rotate-180" />
-          </Link>
-        </div>
-      </section>
+        </section>
+      </Reveal>
     </>
   );
 }
@@ -186,6 +202,7 @@ function VehicleCard() {
   const [make, setMake] = useState("");
   const [series, setSeries] = useState("");
   const [year, setYear] = useState("");
+  const [save, setSave] = useState(true);
 
   const makes = trucks.map((tr) => tr[0]);
   const truck = trucks.find((tr) => tr[0] === make);
@@ -196,10 +213,8 @@ function VehicleCard() {
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (!make) return;
-    const params = new URLSearchParams({ make });
-    if (series) params.set("model", series);
-    if (year) params.set("year", year);
-    router.push(`/parts?${params}`);
+    if (save) update((s) => saveVehicle(s, { make, series, year, nickname: "" }));
+    router.push(`/parts?${vehicleParams({ make, series, year })}`);
   };
 
   return (
@@ -243,6 +258,10 @@ function VehicleCard() {
             </select>
           </label>
         </div>
+        <label className="flex cursor-pointer items-center gap-2 text-[13px] text-[var(--s-text-2)]">
+          <input type="checkbox" checked={save} onChange={(e) => setSave(e.target.checked)} className="h-4 w-4 accent-[var(--s-text)]" />
+          Save to My Garage — mark parts that fit
+        </label>
         <button type="submit" className="s-btn w-full" data-variant="accent" data-size="lg" disabled={!make}>
           {t.findParts} <ArrowRight size={16} className="rtl:rotate-180" />
         </button>
@@ -254,7 +273,7 @@ function VehicleCard() {
   );
 }
 
-function Stat({ icon: Icon, value, label }: { icon: typeof Truck; value: string; label: string }) {
+function Stat({ icon: Icon, value, label }: { icon: typeof Truck; value: React.ReactNode; label: string }) {
   return (
     <div className="flex items-center gap-3 px-2 py-6 md:px-6">
       <Icon size={22} strokeWidth={1.6} className="shrink-0 text-[var(--s-accent)]" aria-hidden="true" />

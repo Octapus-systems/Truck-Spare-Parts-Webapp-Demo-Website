@@ -8,7 +8,10 @@ import type { Product } from "@/data/products";
 import { productPrice } from "@/lib/shop/market";
 import { searchOwn } from "@/lib/store/search";
 import { useAppState, useCatalog } from "@/lib/store/store";
-import { addProductToCart, ProductCard, requestTecdocQuote } from "./product-card";
+import { fitsVehicle } from "@/lib/store/garage";
+import { useActiveVehicle, vehicleParams } from "./garage";
+import { addProductToCart, ProductCard } from "./product-card";
+import { partFromArticle, useQuote } from "./quote-dialog";
 
 const SORTS = {
   relevance: { label: "Best match", fn: null },
@@ -18,8 +21,6 @@ const SORTS = {
 } as const;
 type SortKey = keyof typeof SORTS;
 
-const fitsVehicle = (product: Product, make: string, model: string) =>
-  product.fitment.some((fit) => fit.startsWith(make) && (!model || fit.toLowerCase().includes(model.toLowerCase())));
 
 export function PartsBrowser() {
   const params = useSearchParams();
@@ -27,6 +28,8 @@ export function PartsBrowser() {
   const pathname = usePathname();
   const products = useCatalog();
   const { prefs } = useAppState();
+  const openQuote = useQuote();
+  const vehicle = useActiveVehicle();
 
   const q = params.get("q")?.trim() ?? "";
   const make = params.get("make") ?? "";
@@ -48,7 +51,8 @@ export function PartsBrowser() {
   };
 
   // Base set: text + vehicle. Category/brand/stock facets count within it.
-  const base = searchOwn(q, products).filter((p) => !make || fitsVehicle(p, make, model));
+  const base = searchOwn(q, products).filter((p) => !make || fitsVehicle(p, { make, series: model }));
+  const filteringMyTruck = !!vehicle && make === vehicle.make && model === vehicle.series;
   const results = base
     .filter((p) => (!category || p.category === category) && (!brand || p.brand === brand) && (!inStock || p.stock > 0))
     .sort(SORTS[sort]?.fn ?? (() => 0));
@@ -71,7 +75,7 @@ export function PartsBrowser() {
     openProduct: (p: Product) => router.push(`/parts/${p.id}`),
     addToCart: (p: Product) => addProductToCart(p),
     priceLabel: (p: Product) => productPrice(p, prefs.market),
-    requestQuote: requestTecdocQuote,
+    requestQuote: (a: Parameters<typeof partFromArticle>[0]) => openQuote(partFromArticle(a)),
   };
 
   const filters = (
@@ -115,6 +119,26 @@ export function PartsBrowser() {
           </div>
         </div>
       </div>
+
+      {vehicle && !filteringMyTruck && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--s-line)] bg-[var(--s-green-soft)] px-4 py-3 text-[14px]">
+          <span>
+            Shopping for <strong>{vehicle.nickname}</strong>? Parts that fit are marked.
+          </span>
+          <button
+            className="s-btn"
+            data-variant="primary"
+            data-size="sm"
+            onClick={() => {
+              const next = new URLSearchParams(vehicleParams(vehicle));
+              if (q) next.set("q", q);
+              router.replace(`${pathname}?${next}`, { scroll: false });
+            }}
+          >
+            Only parts for my truck
+          </button>
+        </div>
+      )}
 
       {chips.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-2">

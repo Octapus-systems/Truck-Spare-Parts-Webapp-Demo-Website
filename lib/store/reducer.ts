@@ -2,7 +2,7 @@
 // these with persistence; tests call them directly.
 import type { Product } from "../../data/products";
 import { billTotals, invoiceNumber, toFils } from "./billing.ts";
-import type { AppState, Bill, BillLine, Customer, Discount, Invoice, Order, Prefs } from "./types";
+import type { AppState, Bill, BillLine, Customer, Discount, Invoice, Order, Payment, Prefs } from "./types";
 
 export const WALK_IN: Customer = { id: "walk-in", name: "Walk-in customer", phone: "", trn: null };
 
@@ -23,6 +23,12 @@ export const initialState = (): AppState => ({
   overrides: {},
   cart: {},
   prefs: DEFAULT_PREFS,
+  creditNotes: [],
+  nextCreditSeq: 1,
+  garage: [],
+  activeVehicleId: null,
+  quotes: [],
+  nextQuoteSeq: 1,
 });
 
 // ── Bill ────────────────────────────────────────────────────────────────────
@@ -123,7 +129,11 @@ export const customerOf = (state: AppState, id = state.bill.customerId): Custome
  * Snapshots the bill as an invoice, records stock movements for own lines,
  * marks the source shop order billed, and clears the bill.
  */
-export function confirmBill(state: AppState, now: Date): { state: AppState; invoice: Invoice | null } {
+export function confirmBill(
+  state: AppState,
+  now: Date,
+  payments: Payment[] = [],
+): { state: AppState; invoice: Invoice | null } {
   const { lines, discount, orderId } = state.bill;
   if (!lines.length) return { state, invoice: null };
   const number = invoiceNumber(now.getFullYear(), state.nextInvoiceSeq);
@@ -134,6 +144,7 @@ export function confirmBill(state: AppState, now: Date): { state: AppState; invo
     lines,
     discount,
     ...billTotals(lines, discount),
+    payments,
   };
   const movements = lines
     .filter((l) => l.source === "own" && l.productId)
@@ -264,6 +275,8 @@ export const setPrefs = (state: AppState, prefs: Partial<Prefs>): AppState => ({
 
 // ── Persistence ─────────────────────────────────────────────────────────────
 
+const positive = (value: unknown) => (typeof value === "number" && value > 0 ? value : 1);
+
 const isObject = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === "object" && !Array.isArray(value);
 
@@ -277,7 +290,8 @@ export function hydrate(raw: unknown): AppState {
   return {
     bill,
     customers: customers.some((c) => c.id === WALK_IN.id) ? customers : [WALK_IN, ...customers],
-    invoices: Array.isArray(value.invoices) ? value.invoices : [],
+    // Invoices saved before payments existed have none recorded.
+    invoices: Array.isArray(value.invoices) ? value.invoices.map((inv) => ({ ...inv, payments: inv.payments ?? [] })) : [],
     movements: Array.isArray(value.movements) ? value.movements : [],
     nextInvoiceSeq: typeof value.nextInvoiceSeq === "number" && value.nextInvoiceSeq > 0 ? value.nextInvoiceSeq : 1,
     orders: Array.isArray(value.orders) ? value.orders : [],
@@ -285,5 +299,11 @@ export function hydrate(raw: unknown): AppState {
     overrides: isObject(value.overrides) ? (value.overrides as AppState["overrides"]) : {},
     cart: isObject(value.cart) ? (value.cart as AppState["cart"]) : {},
     prefs: { ...DEFAULT_PREFS, ...(isObject(value.prefs) ? value.prefs : {}) },
+    creditNotes: Array.isArray(value.creditNotes) ? value.creditNotes : [],
+    nextCreditSeq: positive(value.nextCreditSeq),
+    garage: Array.isArray(value.garage) ? value.garage : [],
+    activeVehicleId: typeof value.activeVehicleId === "string" ? value.activeVehicleId : null,
+    quotes: Array.isArray(value.quotes) ? value.quotes : [],
+    nextQuoteSeq: positive(value.nextQuoteSeq),
   };
 }

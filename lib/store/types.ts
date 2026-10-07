@@ -36,15 +36,50 @@ export type Customer = { id: string; name: string; phone: string; trn: string | 
 
 export type Totals = { subtotal: Money; discountTotal: Money; vat: Money; total: Money };
 
+export type PaymentMethod = "cash" | "card" | "bank" | "credit";
+
+/** credit = on account (customer owes); not counted as paid. */
+export type Payment = { method: PaymentMethod; amount: Money; at: string; tendered?: Money };
+
 export type Invoice = Totals & {
   number: string;
   issuedAt: string;
   customer: Customer;
   lines: BillLine[];
   discount: Discount | null;
+  payments: Payment[];
 };
 
-/** qty is negative for stock going out. */
+/** Returned lines carry the returned qty at the invoice unit price. */
+export type CreditNote = Totals & {
+  number: string;
+  issuedAt: string;
+  invoice: string;
+  customer: Customer;
+  lines: BillLine[];
+};
+
+export type Vehicle = { id: string; make: string; series: string; year: string; nickname: string; vin?: string };
+
+export type QuotePart = {
+  brand: string;
+  partNumber: string;
+  description: string;
+  productId: string | null;
+  tecdocKey: string | null;
+};
+
+export type QuoteRequest = {
+  number: string;
+  createdAt: string;
+  customerId: string;
+  part: QuotePart;
+  qty: number;
+  note: string;
+  status: "open" | "done";
+};
+
+/** qty is negative for stock going out. `invoice` is the invoice or credit note number. */
 export type StockMovement = { productId: string; qty: number; invoice: string };
 
 /** Shop order: own catalogue items only, priced at checkout. */
@@ -80,6 +115,12 @@ export type AppState = {
   /** Shop cart: productId → qty. */
   cart: Record<string, number>;
   prefs: Prefs;
+  creditNotes: CreditNote[];
+  nextCreditSeq: number;
+  garage: Vehicle[];
+  activeVehicleId: string | null;
+  quotes: QuoteRequest[];
+  nextQuoteSeq: number;
 };
 
 /** One row in the results table: an own catalogue item or a TecDoc article. */

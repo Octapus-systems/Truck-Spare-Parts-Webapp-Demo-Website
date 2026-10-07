@@ -9,7 +9,9 @@ import { trucks } from "@/data/products";
 import { money, productPrice, stockState } from "@/lib/shop/market";
 import { VAT_RATE } from "@/lib/store/billing";
 import { useAppState, useCatalog } from "@/lib/store/store";
+import { FitsBadge } from "./garage";
 import { addProductToCart, ProductCard } from "./product-card";
+import { partFromProduct, useQuote } from "./quote-dialog";
 
 const truckMakes = [...new Set(trucks.map((t) => t[0]))];
 
@@ -22,6 +24,7 @@ export function ProductDetail() {
   const { prefs, cart } = useAppState();
   const [qty, setQty] = useState(1);
   const [tab, setTab] = useState<Tab>("specs");
+  const openQuote = useQuote();
 
   const product = products.find((p) => p.id === id);
   if (!product) {
@@ -49,9 +52,9 @@ export function ProductDetail() {
         <span className="mono text-[var(--s-text-2)]">{product.partNumber}</span>
       </nav>
 
-      <div className="mt-6 grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)]">
         <div className="relative grid aspect-[4/3] place-items-center rounded-2xl border border-[var(--s-line)] bg-[var(--s-surface)]">
-          <img src={product.image} alt={product.name} className="h-full w-full object-contain p-10 mix-blend-multiply" />
+          <img id="product-image" src={product.image} alt={product.name} className="h-full w-full object-contain p-10 mix-blend-multiply" />
           {product.verified && (
             <span className="s-badge absolute start-4 top-4" data-tone="accent">
               <BadgeCheck size={13} /> Verified listing
@@ -59,12 +62,13 @@ export function ProductDetail() {
           )}
         </div>
 
-        <div>
+        <div className="min-w-0">
           <p className="text-[13px] font-semibold uppercase tracking-[.08em] text-[var(--s-muted)]">
             {product.brand} · {product.category}
           </p>
           <h1 className="mt-2 text-[clamp(26px,3vw,34px)] font-semibold leading-tight tracking-[-.03em]">{product.name}</h1>
-          <dl className="mono mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-[13.5px]">
+          <FitsBadge product={product} className="mt-3" />
+          <dl className="mono mt-4 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 break-words text-[13.5px]">
             <dt className="text-[var(--s-muted)]">Part no.</dt>
             <dd>{product.partNumber}</dd>
             <dt className="text-[var(--s-muted)]">OE</dt>
@@ -99,7 +103,7 @@ export function ProductDetail() {
                       <Plus size={16} />
                     </button>
                   </div>
-                  <button className="s-btn flex-1" data-variant="primary" data-size="lg" onClick={() => addProductToCart(product, qty)}>
+                  <button className="s-btn min-w-0 flex-1 !whitespace-normal" data-variant="primary" data-size="lg" onClick={() => addProductToCart(product, qty, document.querySelector("#product-image"))}>
                     Add to cart{cart[product.id] ? ` · ${cart[product.id]} in cart` : ""}
                   </button>
                 </div>
@@ -113,6 +117,11 @@ export function ProductDetail() {
                 >
                   Buy now
                 </button>
+                {product.stock <= 0 && (
+                  <button className="mt-2 w-full text-center text-[13px] font-medium text-[var(--s-accent)] hover:underline" onClick={() => openQuote(partFromProduct(product))}>
+                    Out of stock — request a quote with lead time
+                  </button>
+                )}
                 {qty > product.stock && (
                   <p className="mt-3 text-[13px] text-[var(--s-amber)]">
                     {product.stock > 0 ? `Only ${product.stock} in stock — ` : ""}the rest will be ordered in; our counter confirms the lead time.
@@ -120,7 +129,12 @@ export function ProductDetail() {
                 )}
               </>
             ) : (
-              <p className="mt-4 text-[14px] text-[var(--s-text-2)]">This listing is for reference. Contact the counter for price and availability.</p>
+              <>
+                <p className="mt-4 text-[14px] text-[var(--s-text-2)]">This listing is for reference. Ask the counter for price and availability.</p>
+                <button className="s-btn mt-4 w-full" data-variant="primary" data-size="lg" onClick={() => openQuote(partFromProduct(product))}>
+                  Request a quote
+                </button>
+              </>
             )}
             <ul className="mt-5 grid gap-2 border-t border-[var(--s-line)] pt-4 text-[13.5px] text-[var(--s-text-2)]">
               <li className="flex items-center gap-2"><Warehouse size={16} className="text-[var(--s-muted)]" /> Stocked at {product.warehouse}</li>

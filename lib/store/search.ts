@@ -20,6 +20,17 @@ export function searchOwn(query: string, products: Product[]): Product[] {
   );
 }
 
+/** Exact part number, SKU or OE match — what a barcode scanner types. */
+export function findByCode(code: string, products: Product[]): Product | null {
+  const key = normalize(code);
+  if (key.length < 3) return null;
+  return (
+    products.find((p) => normalize(p.partNumber) === key || normalize(p.sku) === key) ??
+    products.find((p) => p.oe.some((oe) => normalize(oe) === key)) ??
+    null
+  );
+}
+
 export const ownRow = (product: Product, stock: number): ResultRow => ({
   key: `own:${product.id}`,
   source: "own",

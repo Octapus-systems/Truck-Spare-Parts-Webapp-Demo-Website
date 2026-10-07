@@ -29,12 +29,12 @@ Builds on `2026-10-06-unified-shop-counter-design.md`. Same browser-only store.
   credit note `CN-{year}-{seq:6}`; amounts at invoice unit price, invoice
   discount applied proportionally, VAT 5% reversed; own-stock lines go back
   into stock.
-- **Dashboard** (`F11`): today / this month net sales (invoices − credit
+- **Dashboard** (`F7`; F11 is taken by browser fullscreen): today / this month net sales (invoices − credit
   notes), VAT, invoice count, average bill; 14-day sales bars; top parts;
   low stock (≤ 5); open quote requests; CSV export of invoices.
 - **Scanner**: Enter in the search box with an exact part no / SKU / OE match
   adds it to the bill (USB scanners type + Enter). Camera scan uses the
-  browser BarcodeDetector where available.
+  browser BarcodeDetector where available (`S` key or Scan).
 
 ## Testing
 Unit: payments/status, change, returns limits and credit totals, stock back,

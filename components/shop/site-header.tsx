@@ -10,6 +10,7 @@ import { setPrefs } from "@/lib/store/reducer";
 import { update, useAppState } from "@/lib/store/store";
 import type { Market } from "@/lib/store/types";
 import { CartSheet } from "./cart-sheet";
+import { GarageButton, GaragePanel } from "./garage";
 import { SearchBox } from "./search-box";
 
 export function Logo() {
@@ -59,11 +60,11 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="mx-auto hidden w-full max-w-[380px] md:block">
+        <div className="mx-auto hidden w-full min-w-0 max-w-[340px] flex-1 md:block">
           {pathname !== "/" && <SearchBox key={pathname} placeholder={t.searchPlaceholder} buttonLabel={t.search} />}
         </div>
 
-        <div className="ms-auto flex items-center gap-1">
+        <div className="ms-auto flex shrink-0 items-center gap-1">
           <label className="hidden items-center gap-1.5 rounded-md px-2 hover:bg-[var(--s-surface)] sm:flex">
             <CountryFlag market={prefs.market} className="rounded-[2px] shadow-[0_0_0_1px_rgba(0,0,0,.08)]" />
             <select
@@ -85,9 +86,12 @@ export function SiteHeader() {
           >
             {prefs.locale === "en" ? "عربي" : "EN"}
           </button>
-          <Link href="/counter" className="hidden h-9 items-center whitespace-nowrap rounded-md border border-[var(--s-line)] px-3 text-[12.5px] font-medium text-[var(--s-text-2)] hover:border-[var(--s-text)] hover:text-[var(--s-text)] xl:flex">
+          <Link href="/counter" className="hidden h-9 items-center whitespace-nowrap rounded-md border border-[var(--s-line)] px-3 text-[12.5px] font-medium text-[var(--s-text-2)] hover:border-[var(--s-text)] hover:text-[var(--s-text)] 2xl:flex">
             {t.staff}
           </Link>
+          <div className="hidden md:block">
+            <GarageButton />
+          </div>
           <CartSheet label={t.cart} />
           <button
             className="grid h-10 w-10 place-items-center rounded-md hover:bg-[var(--s-surface)] lg:hidden"
@@ -109,6 +113,9 @@ export function SiteHeader() {
                 <SearchBox placeholder={t.searchPlaceholder} buttonLabel={t.search} />
               </div>
             )}
+            <div className="mb-2 rounded-xl border border-[var(--s-line)] p-3 md:hidden">
+              <GaragePanel />
+            </div>
             {[...links, { href: "/counter", label: t.staff, active: false }].map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-3 text-[15px] font-medium hover:bg-[var(--s-surface)]">
                 {link.label}

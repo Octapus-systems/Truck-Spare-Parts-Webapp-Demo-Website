@@ -1,8 +1,9 @@
 "use client";
 
 import { CURRENCY, formatMoney } from "@/lib/store/billing";
-import type { Bill, BillLine, Customer, Totals } from "@/lib/store/types";
+import type { Bill, BillLine, Customer, Payment, Totals } from "@/lib/store/types";
 import { Overlay } from "./overlay";
+import { usePaymentEntry } from "./payment-entry";
 
 export function ConfirmDialog({
   bill,
@@ -16,16 +17,24 @@ export function ConfirmDialog({
   customer: Customer;
   totals: Totals;
   shortBy: (line: BillLine) => number;
-  onConfirm: () => void;
+  onConfirm: (payments: Payment[]) => void;
   onClose: () => void;
 }) {
+  const payment = usePaymentEntry(totals.total);
   const short = bill.lines.filter((l) => shortBy(l) > 0);
   const unverified = bill.lines.filter((l) => !l.verified).length;
   const specialOrders = bill.lines.filter((l) => l.specialOrder).length;
+  const confirm = () => !payment.error && onConfirm(payment.payments);
 
   return (
-    <Overlay title="Confirm bill" onClose={onClose}>
-      <div className="grid gap-3 p-4">
+    <Overlay title="Confirm bill & payment" onClose={onClose}>
+      <form
+        className="grid gap-3 p-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          confirm();
+        }}
+      >
         <dl className="c-dl">
           <dt>Customer</dt>
           <dd>
@@ -45,10 +54,14 @@ export function ConfirmDialog({
           <dd className="mono text-[18px] font-bold">{formatMoney(totals.total)}</dd>
         </dl>
 
+        <section className="border-t border-[var(--c-line)] pt-3">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[.06em] text-[var(--c-muted)]">Payment</p>
+          {payment.form}
+        </section>
+
         {short.length > 0 && (
           <div className="border border-[var(--c-red)] bg-[var(--c-red-soft)] p-2 text-[12px] text-[var(--c-red)]">
-            <strong>Stock short:</strong>{" "}
-            {short.map((l) => `${l.partNumber} (short ${shortBy(l)})`).join(", ")}. Confirming books them as backorder.
+            <strong>Stock short:</strong> {short.map((l) => `${l.partNumber} (short ${shortBy(l)})`).join(", ")}. Confirming books them as backorder.
           </div>
         )}
         {(unverified > 0 || specialOrders > 0) && (
@@ -59,15 +72,14 @@ export function ConfirmDialog({
         )}
 
         <div className="flex justify-end gap-2">
-          <button className="c-btn" onClick={onClose}>
+          <button type="button" className="c-btn" onClick={onClose}>
             Back <span className="c-kbd">Esc</span>
           </button>
-          <button autoFocus className="c-btn" data-primary="true" onClick={onConfirm}>
-            {short.length ? "Confirm anyway" : "Confirm & create invoice"} <span className="c-kbd">Enter</span>{" "}
-            <span className="c-kbd">F9</span>
+          <button type="submit" autoFocus className="c-btn" data-primary="true" disabled={!!payment.error}>
+            {short.length ? "Confirm anyway" : "Confirm & create invoice"} <span className="c-kbd">Enter</span> <span className="c-kbd">F9</span>
           </button>
         </div>
-      </div>
+      </form>
     </Overlay>
   );
 }

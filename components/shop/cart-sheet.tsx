@@ -28,7 +28,7 @@ export function CartSheet({ label }: { label: string }) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="s-btn ms-1" data-variant="primary" data-size="sm" aria-label={`${label}, ${count} items`}>
+        <button id="cart-button" className="s-btn ms-1" data-variant="primary" data-size="sm" aria-label={`${label}, ${count} items`}>
           <ShoppingBag size={16} aria-hidden="true" />
           <span className="hidden sm:inline">{label}</span>
           {count > 0 && <span className="tnum grid h-5 min-w-5 place-items-center rounded-full bg-white px-1 text-[11px] text-[var(--s-text)]">{count}</span>}

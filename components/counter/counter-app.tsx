@@ -18,9 +18,12 @@ import {
   setDiscount,
   toggleVerified,
 } from "@/lib/store/reducer";
-import { buildRows } from "@/lib/store/search";
+import { buildRows, findByCode, ownRow } from "@/lib/store/search";
 import { isStorageOk, resetDemo, update, useAppState, useCatalog } from "@/lib/store/store";
-import type { BillLine, Invoice, Order, ResultRow } from "@/lib/store/types";
+import type { BillLine, CreditNote, Invoice, Order, Payment, ResultRow } from "@/lib/store/types";
+import { amountDue, recordPayment } from "@/lib/store/payments";
+import { closeQuote } from "@/lib/store/quotes";
+import { issueCreditNote } from "@/lib/store/returns";
 import type { TecdocArticle } from "@/lib/tecdoc/types";
 import { useTecdoc } from "@/components/tecdoc/use-tecdoc";
 import { BillPanel } from "./bill-panel";
@@ -28,7 +31,11 @@ import { CompareTable } from "./compare-table";
 import { ConfirmDialog } from "./confirm-dialog";
 import { CustomerPicker } from "./customer-picker";
 import { InvoiceHistory } from "./invoice-history";
-import { InvoiceView } from "./invoice-view";
+import { CreditNoteView, InvoiceView } from "./invoice-view";
+import { CameraScan } from "./camera-scan";
+import { Dashboard } from "./dashboard";
+import { RecordPayment } from "./record-payment";
+import { ReturnDialog } from "./return-dialog";
 import { HelpOverlay, KeyBar } from "./key-bar";
 import { OrdersList } from "./orders-list";
 import { Prompt } from "./overlay";
@@ -43,7 +50,12 @@ type Overlay =
   | { kind: "customer" }
   | { kind: "compare" }
   | { kind: "confirm" }
-  | { kind: "invoice"; invoice: Invoice }
+  | { kind: "invoice"; number: string; justCreated: boolean }
+  | { kind: "creditNote"; creditNote: CreditNote }
+  | { kind: "pay"; number: string }
+  | { kind: "return"; number: string }
+  | { kind: "dashboard" }
+  | { kind: "scan" }
   | { kind: "history" }
   | { kind: "orders" }
   | { kind: "help" };
@@ -121,6 +133,10 @@ export function CounterApp() {
   };
 
   const closeOverlay = () => setOverlay({ kind: "none" });
+  const openInvoice =
+    overlay.kind === "invoice" || overlay.kind === "pay" || overlay.kind === "return"
+      ? state.invoices.find((i) => i.number === overlay.number)
+      : undefined;
 
   const onQuery = (value: string) => {
     setQuery(value);
@@ -239,16 +255,16 @@ export function CounterApp() {
     }
   };
 
-  const confirm = () => {
+  const confirm = (payments: Payment[]) => {
     let created = null as Invoice | null;
     update((s) => {
-      const result = confirmBill(s, new Date());
+      const result = confirmBill(s, new Date(), payments);
       created = result.invoice;
       return result.state;
     });
     if (!created) return;
     const invoice: Invoice = created;
-    setOverlay({ kind: "invoice", invoice });
+    setOverlay({ kind: "invoice", number: invoice.number, justCreated: true });
     setVerifiedKeys(new Set());
     setCompare([]);
     setLineIndex(0);
@@ -263,6 +279,31 @@ export function CounterApp() {
     closeOverlay();
     focusBill();
     setStatus(`Order ${order.number} loaded into the bill. Check fitment and stock, then F9 to invoice.`);
+  };
+
+  const addByCode = (code: string) => {
+    const product = findByCode(code, products);
+    if (!product) {
+      setStatus(`No part, SKU or OE number matches “${code}”.`);
+      return false;
+    }
+    addRow(ownRow(product, product.stock));
+    onQuery("");
+    searchRef.current?.focus();
+    return true;
+  };
+
+  const issueReturn = (invoiceNo: string, request: Parameters<typeof issueCreditNote>[2]) => {
+    let note = null as CreditNote | null;
+    update((s) => {
+      const result = issueCreditNote(s, invoiceNo, request, new Date());
+      note = result.creditNote;
+      return result.state;
+    });
+    const issued = note as CreditNote | null;
+    if (!issued) return setStatus("Nothing left to return on that invoice.");
+    setOverlay({ kind: "creditNote", creditNote: issued });
+    setStatus(`Credit note ${issued.number} issued · ${formatMoney(issued.total)} AED. Stock returned.`);
   };
 
   const startNewBill = () => {
@@ -283,7 +324,11 @@ export function CounterApp() {
 
     if (overlay.kind !== "none") {
       if (action === "escape") return closeOverlay();
-      if (action === "confirm" && overlay.kind === "confirm") return confirm();
+      if (action === "confirm" && overlay.kind === "confirm") {
+        // Submit the dialog so its payment validation runs.
+        document.querySelector<HTMLFormElement>("[role=dialog] form")?.requestSubmit();
+        return;
+      }
       if (action === "newBill" && overlay.kind === "invoice") return closeOverlay();
       return false; // overlays handle their own keys
     }
@@ -306,6 +351,11 @@ export function CounterApp() {
       case "enter":
         if (document.activeElement === searchRef.current) {
           const q = query.trim();
+          // Barcode scanners type the code and press Enter: exact matches go straight to the bill.
+          if (findByCode(q, products)) {
+            addByCode(q);
+            return;
+          }
           if (q.length >= 3 && q !== tecdocQuery) {
             setTecdocQuery(q);
             setRowIndex(0);
@@ -349,6 +399,10 @@ export function CounterApp() {
         return setOverlay({ kind: "confirm" });
       case "history":
         return setOverlay({ kind: "history" });
+      case "dashboard":
+        return setOverlay({ kind: "dashboard" });
+      case "scan":
+        return setOverlay({ kind: "scan" });
       case "orders":
         return setOverlay({ kind: "orders" });
       case "newBill":
@@ -508,9 +562,67 @@ export function CounterApp() {
       {overlay.kind === "confirm" && (
         <ConfirmDialog bill={bill} customer={customer} totals={totals} shortBy={shortBy} onConfirm={confirm} onClose={closeOverlay} />
       )}
-      {overlay.kind === "invoice" && <InvoiceView invoice={overlay.invoice} onNew={closeOverlay} onClose={closeOverlay} />}
+      {overlay.kind === "invoice" && openInvoice && (
+        <InvoiceView
+          invoice={openInvoice}
+          creditNotes={state.creditNotes}
+          justCreated={overlay.justCreated}
+          onNew={closeOverlay}
+          onPay={() => setOverlay({ kind: "pay", number: openInvoice.number })}
+          onReturn={() => setOverlay({ kind: "return", number: openInvoice.number })}
+          onClose={closeOverlay}
+        />
+      )}
+      {overlay.kind === "creditNote" && <CreditNoteView creditNote={overlay.creditNote} onClose={closeOverlay} />}
+      {overlay.kind === "pay" && openInvoice && (
+        <RecordPayment
+          invoice={openInvoice}
+          due={amountDue(openInvoice, state.creditNotes)}
+          onSave={(payments) => {
+            update((s) => payments.reduce((acc, p) => recordPayment(acc, openInvoice.number, p), s));
+            setStatus(`Payment recorded on ${openInvoice.number}.`);
+            setOverlay({ kind: "invoice", number: openInvoice.number, justCreated: false });
+          }}
+          onClose={() => setOverlay({ kind: "invoice", number: openInvoice.number, justCreated: false })}
+        />
+      )}
+      {overlay.kind === "return" && openInvoice && (
+        <ReturnDialog
+          invoice={openInvoice}
+          creditNotes={state.creditNotes}
+          onIssue={(request) => issueReturn(openInvoice.number, request)}
+          onClose={() => setOverlay({ kind: "invoice", number: openInvoice.number, justCreated: false })}
+        />
+      )}
+      {overlay.kind === "dashboard" && (
+        <Dashboard
+          state={state}
+          products={products}
+          customerOf={(id) => customerOf(state, id)}
+          onCloseQuote={(q) => {
+            update((s) => closeQuote(s, q.number));
+            setStatus(`Quote request ${q.number} marked done.`);
+          }}
+          onClose={closeOverlay}
+        />
+      )}
+      {overlay.kind === "scan" && (
+        <CameraScan
+          onCode={(code) => {
+            closeOverlay();
+            if (addByCode(code)) setStatus(`Scanned ${code} → added to bill.`);
+          }}
+          onClose={closeOverlay}
+        />
+      )}
       {overlay.kind === "history" && (
-        <InvoiceHistory invoices={state.invoices} onOpen={(invoice) => setOverlay({ kind: "invoice", invoice })} onClose={closeOverlay} />
+        <InvoiceHistory
+          invoices={state.invoices}
+          creditNotes={state.creditNotes}
+          onOpen={(invoice) => setOverlay({ kind: "invoice", number: invoice.number, justCreated: false })}
+          onOpenCredit={(creditNote) => setOverlay({ kind: "creditNote", creditNote })}
+          onClose={closeOverlay}
+        />
       )}
       {overlay.kind === "orders" && (
         <OrdersList

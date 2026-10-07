@@ -23,6 +23,8 @@ export type CounterAction =
   | "confirm"
   | "history"
   | "orders"
+  | "dashboard"
+  | "scan"
   | "newBill"
   | "help";
 
@@ -47,6 +49,8 @@ export const SHORTCUTS: Shortcut[] = [
   { action: "verify", keys: ["v", "V"], label: "Verify fitment", printable: true },
   { action: "customer", keys: ["F4"], label: "Customer", bar: true },
   { action: "orders", keys: ["F6"], label: "Shop orders", bar: true },
+  { action: "dashboard", keys: ["F7"], label: "Dashboard", bar: true },
+  { action: "scan", keys: ["s", "S"], label: "Camera scan", printable: true },
   { action: "bill", keys: ["F8"], label: "Bill lines", bar: true },
   { action: "qtyUp", keys: ["+", "="], label: "Qty +1", printable: true },
   { action: "qtyDown", keys: ["-"], label: "Qty −1", printable: true },

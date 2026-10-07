@@ -69,3 +69,22 @@
   linear-gradient(180deg, #fbfbfc 0%, #ffffff 100%);
   border-bottom: 1px solid var(--s-line); }
 .s-grid-lines { background-image: linear-gradient(var(--s-line) 1px, transparent 1px), linear-gradient(90deg, var(--s-line) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse at 70% 0%, #000 0%, transparent 70%); opacity: .55; }
+
+/* Motion. Everything below is off under prefers-reduced-motion. */
+.s-page { animation: s-page-in .35s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes s-page-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.s-reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s cubic-bezier(.2,.8,.2,1), transform .6s cubic-bezier(.2,.8,.2,1); }
+.s-reveal[data-shown="true"] { opacity: 1; transform: none; }
+.s-card[data-hover] { transition: border-color .2s, box-shadow .2s, transform .2s cubic-bezier(.2,.8,.2,1); }
+.s-card[data-hover]:hover { transform: translateY(-2px); }
+.s-pop { animation: s-pop .45s cubic-bezier(.3,1.6,.5,1); }
+@keyframes s-pop { 0% { transform: scale(1); } 40% { transform: scale(1.14); } 100% { transform: scale(1); } }
+.s-skeleton { background: linear-gradient(90deg, var(--s-surface-2) 0%, #f7f8fa 50%, var(--s-surface-2) 100%); background-size: 200% 100%; animation: s-shimmer 1.2s linear infinite; }
+@keyframes s-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.s-float-in { animation: s-float-in .5s cubic-bezier(.2,.8,.2,1) .6s both; }
+@keyframes s-float-in { from { opacity: 0; transform: translateY(16px) scale(.9); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .s-page, .s-pop, .s-float-in, .s-skeleton { animation: none; }
+  .s-reveal { opacity: 1; transform: none; transition: none; }
+  .s-card[data-hover]:hover { transform: none; }
+}
